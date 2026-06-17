@@ -64,6 +64,44 @@
             padding: 18px 24px;
         }
 
+        .app-nav {
+            background: var(--panel);
+            border-bottom: 1px solid var(--line);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 10px 24px;
+            position: sticky;
+            top: 0;
+            z-index: 4;
+        }
+
+        .tab-button {
+            align-items: center;
+            background: transparent;
+            border: 1px solid transparent;
+            color: var(--muted);
+            display: inline-flex;
+            gap: 8px;
+            min-height: 38px;
+            padding: 8px 12px;
+        }
+
+        .tab-button.active {
+            background: var(--control);
+            border-color: var(--line);
+            color: var(--text);
+        }
+
+        .view-panel {
+            display: grid;
+            gap: 18px;
+        }
+
+        .view-panel[hidden] {
+            display: none;
+        }
+
         .header-copy {
             display: grid;
             gap: 4px;
@@ -167,6 +205,23 @@
 
         .panel {
             padding: 18px;
+        }
+
+        .section-head {
+            align-items: center;
+            display: flex;
+            gap: 12px;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .section-head p {
+            margin: 4px 0 0;
+        }
+
+        .message-line {
+            color: var(--muted);
+            min-height: 18px;
         }
 
         form {
@@ -485,6 +540,7 @@
             }
 
             header,
+            .app-nav,
             main {
                 padding-left: 14px;
                 padding-right: 14px;
@@ -511,45 +567,61 @@
         </div>
     </header>
 
+    <nav class="app-nav" aria-label="Dashboard views">
+        <button class="tab-button active" type="button" data-view-target="overview">Overview</button>
+        <button class="tab-button" type="button" data-view-target="leads">Lead Scoring</button>
+        <button class="tab-button" type="button" data-view-target="team">Team Leads</button>
+        <button class="tab-button" type="button" data-view-target="work">Assigned Work</button>
+        <span class="message-line" id="message"></span>
+    </nav>
+
     <main>
-        <section class="summary" id="summary"></section>
+        <div class="view-panel active" data-view-panel="overview">
+            <section class="summary" id="summary"></section>
 
-        <section class="charts" aria-label="Dashboard charts">
-            <article class="chart-card">
-                <h2>Work Status Distribution</h2>
-                <p class="muted">Assigned work grouped by current status.</p>
-                <canvas id="status-pie-chart"></canvas>
-                <div class="chart-legend" id="status-pie-legend"></div>
-            </article>
+            <section class="charts" aria-label="Dashboard charts">
+                <article class="chart-card">
+                    <h2>Work Status Distribution</h2>
+                    <p class="muted">Assigned work grouped by current status.</p>
+                    <canvas id="status-pie-chart"></canvas>
+                    <div class="chart-legend" id="status-pie-legend"></div>
+                </article>
 
-            <article class="chart-card">
-                <h2>Workload By Team Lead</h2>
-                <p class="muted">Number of assigned work items per lead.</p>
-                <canvas id="team-work-bar-chart"></canvas>
-            </article>
+                <article class="chart-card">
+                    <h2>Workload By Team Lead</h2>
+                    <p class="muted">Number of assigned work items per lead.</p>
+                    <canvas id="team-work-bar-chart"></canvas>
+                </article>
 
-            <article class="chart-card">
-                <h2>Average Progress By Team Lead</h2>
-                <p class="muted">Average completion percentage per lead.</p>
-                <canvas id="team-progress-bar-chart"></canvas>
-            </article>
+                <article class="chart-card">
+                    <h2>Average Progress By Team Lead</h2>
+                    <p class="muted">Average completion percentage per lead.</p>
+                    <canvas id="team-progress-bar-chart"></canvas>
+                </article>
 
-            <article class="chart-card">
-                <h2>Lead Grade Distribution</h2>
-                <p class="muted">Hot, warm, and cold scored leads.</p>
-                <canvas id="lead-grade-pie-chart"></canvas>
-                <div class="chart-legend" id="lead-grade-pie-legend"></div>
-            </article>
+                <article class="chart-card">
+                    <h2>Lead Grade Distribution</h2>
+                    <p class="muted">Hot, warm, and cold scored leads.</p>
+                    <canvas id="lead-grade-pie-chart"></canvas>
+                    <div class="chart-legend" id="lead-grade-pie-legend"></div>
+                </article>
 
-            <article class="chart-card">
-                <h2>Leads Per Team Lead</h2>
-                <p class="muted">Scored leads currently assigned to each owner.</p>
-                <canvas id="lead-owner-bar-chart"></canvas>
-            </article>
-        </section>
+                <article class="chart-card">
+                    <h2>Leads Per Team Lead</h2>
+                    <p class="muted">Scored leads currently assigned to each owner.</p>
+                    <canvas id="lead-owner-bar-chart"></canvas>
+                </article>
+            </section>
+        </div>
 
-        <section class="panel">
-            <h2 id="lead-form-title">Add Scored Lead</h2>
+        <div class="view-panel" data-view-panel="leads" hidden>
+            <section class="panel">
+            <div class="section-head">
+                <div>
+                    <h2 id="lead-form-title">Add Scored Lead</h2>
+                    <p class="muted">Score prospects and let the system auto-route unassigned leads.</p>
+                </div>
+            </div>
             <div class="summary" id="lead-score-summary"></div>
             <form id="lead-form">
                 <input type="hidden" id="lead-id">
@@ -630,10 +702,15 @@
                     <button class="secondary" type="button" id="cancel-lead-edit">Cancel</button>
                 </div>
             </form>
-        </section>
+            </section>
 
-        <section class="panel">
-            <h2>Lead Scoring</h2>
+            <section class="panel">
+            <div class="section-head">
+                <div>
+                    <h2>Lead Scoring</h2>
+                    <p class="muted">Prioritize hot leads and monitor assignment coverage.</p>
+                </div>
+            </div>
             <div class="filters">
                 <input id="lead-search" placeholder="Search leads, company, industry">
                 <select id="lead-filter-grade"></select>
@@ -660,10 +737,17 @@
                     <tbody id="lead-table"></tbody>
                 </table>
             </div>
-        </section>
+            </section>
+        </div>
 
-        <section class="panel">
-            <h2 id="team-form-title">Add Team Lead</h2>
+        <div class="view-panel" data-view-panel="team" hidden>
+            <section class="panel">
+            <div class="section-head">
+                <div>
+                    <h2 id="team-form-title">Add Team Lead</h2>
+                    <p class="muted">Maintain the team lead directory used for work and lead routing.</p>
+                </div>
+            </div>
             <form id="team-form">
                 <input type="hidden" id="team-id">
 
@@ -705,13 +789,17 @@
                 <div class="actions">
                     <button class="primary" type="submit">Save Team Lead</button>
                     <button class="secondary" type="button" id="cancel-team-edit">Cancel</button>
-                    <span id="message"></span>
                 </div>
             </form>
-        </section>
+            </section>
 
-        <section class="panel">
-            <h2>Team Leads</h2>
+            <section class="panel">
+            <div class="section-head">
+                <div>
+                    <h2>Team Leads</h2>
+                    <p class="muted">Review ownership, active status, and assigned work counts.</p>
+                </div>
+            </div>
             <div class="filters">
                 <input id="team-search" placeholder="Search team leads">
                 <select id="team-filter-status"></select>
@@ -735,10 +823,17 @@
                     <tbody id="team-table"></tbody>
                 </table>
             </div>
-        </section>
+            </section>
+        </div>
 
-        <section class="panel">
-            <h2 id="work-form-title">Assign Work</h2>
+        <div class="view-panel" data-view-panel="work" hidden>
+            <section class="panel">
+            <div class="section-head">
+                <div>
+                    <h2 id="work-form-title">Assign Work</h2>
+                    <p class="muted">Create campaign responsibilities and track delivery progress.</p>
+                </div>
+            </div>
             <form id="work-form">
                 <input type="hidden" id="work-id">
 
@@ -812,10 +907,15 @@
                     <button class="secondary" type="button" id="cancel-work-edit">Cancel</button>
                 </div>
             </form>
-        </section>
+            </section>
 
-        <section class="panel" id="assigned-work-panel">
-            <h2>Assigned Work</h2>
+            <section class="panel" id="assigned-work-panel">
+            <div class="section-head">
+                <div>
+                    <h2>Assigned Work</h2>
+                    <p class="muted">Filter, update, and complete campaign work items.</p>
+                </div>
+            </div>
             <div class="filters">
                 <input id="work-search" placeholder="Search work, client, campaign, team lead">
                 <select id="work-filter-status"></select>
@@ -843,7 +943,8 @@
                     <tbody id="work-table"></tbody>
                 </table>
             </div>
-        </section>
+            </section>
+        </div>
     </main>
 
     <script>
@@ -1019,6 +1120,19 @@
             const savedTheme = localStorage.getItem("theme");
             const preferredTheme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
             applyTheme(savedTheme || preferredTheme);
+        }
+
+        function setActiveView(viewName) {
+            document.querySelectorAll("[data-view-panel]").forEach((panel) => {
+                panel.hidden = panel.dataset.viewPanel !== viewName;
+            });
+            document.querySelectorAll("[data-view-target]").forEach((button) => {
+                button.classList.toggle("active", button.dataset.viewTarget === viewName);
+            });
+            localStorage.setItem("activeView", viewName);
+            if (viewName === "overview") {
+                requestAnimationFrame(renderCharts);
+            }
         }
 
         function teamInput(field) {
@@ -1594,6 +1708,7 @@
             const lead = teamLeads.find((item) => item.id === id);
             if (!lead) return;
 
+            setActiveView("team");
             document.getElementById("team-id").value = lead.id;
             teamFields.forEach((field) => {
                 teamInput(field).value = lead[field] || "";
@@ -1664,6 +1779,7 @@
             const work = assignedWork.find((item) => item.id === id);
             if (!work) return;
 
+            setActiveView("work");
             document.getElementById("work-id").value = work.id;
             workFields.forEach((field) => {
                 workInput(field).value = work[field] || "";
@@ -1676,6 +1792,7 @@
             const lead = scoredLeads.find((item) => item.id === id);
             if (!lead) return;
 
+            setActiveView("leads");
             document.getElementById("lead-id").value = lead.id;
             leadFields.forEach((field) => {
                 leadInput(field).value = lead[field] ?? "";
@@ -1730,6 +1847,7 @@
             const lead = teamLeads.find((item) => item.id === id);
             activeTeamLeadFilter = String(id);
             activeTeamLeadFilterName = lead ? lead.full_name : "selected team lead";
+            setActiveView("work");
             document.getElementById("work-search").value = "";
             document.getElementById("work-filter-status").value = "";
             document.getElementById("work-filter-priority").value = "";
@@ -1756,6 +1874,9 @@
             document.getElementById("team-form").addEventListener("submit", saveTeamLead);
             document.getElementById("work-form").addEventListener("submit", saveWork);
             document.getElementById("lead-form").addEventListener("submit", saveLead);
+            document.querySelectorAll("[data-view-target]").forEach((button) => {
+                button.addEventListener("click", () => setActiveView(button.dataset.viewTarget));
+            });
             document.getElementById("theme-toggle").addEventListener("click", () => {
                 applyTheme(document.body.dataset.theme === "dark" ? "light" : "dark");
             });
@@ -1799,6 +1920,7 @@
             });
 
             initTheme();
+            setActiveView(localStorage.getItem("activeView") || "overview");
             resetTeamForm();
             resetWorkForm();
             resetLeadForm();
