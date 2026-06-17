@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import AssignedWork, TeamLead
+from .models import AssignedWork, Lead, TeamLead
 
 
 @admin.register(TeamLead)
@@ -31,3 +31,20 @@ class AssignedWorkAdmin(admin.ModelAdmin):
     )
     list_filter = ("status", "priority", "campaign_type", "channel")
     search_fields = ("title", "client_name", "campaign_name", "team_lead__full_name")
+
+
+@admin.register(Lead)
+class LeadAdmin(admin.ModelAdmin):
+    list_display = (
+        "full_name",
+        "company_name",
+        "industry",
+        "source",
+        "assigned_to",
+        "status",
+        "lead_score",
+        "lead_grade",
+    )
+    list_filter = ("lead_grade", "status", "source", "industry")
+    search_fields = ("full_name", "email", "phone", "company_name", "industry")
+    readonly_fields = ("lead_score", "lead_grade")

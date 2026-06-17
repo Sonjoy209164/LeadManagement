@@ -222,6 +222,18 @@
             margin-top: 14px;
         }
 
+        .filters input {
+            flex: 1 1 240px;
+            max-width: 420px;
+            width: auto;
+        }
+
+        .filters select {
+            flex: 0 1 180px;
+            min-width: 160px;
+            width: auto;
+        }
+
         .filter-note {
             min-height: 20px;
         }
@@ -260,7 +272,10 @@
         }
 
         .table-wrap {
-            overflow-x: auto;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            max-height: 440px;
+            overflow: auto;
             margin-top: 14px;
         }
 
@@ -279,14 +294,35 @@
         }
 
         th {
+            background: var(--panel);
             color: var(--muted);
             font-size: 12px;
+            position: sticky;
+            top: 0;
+            z-index: 1;
             text-transform: uppercase;
+        }
+
+        td {
+            max-width: 260px;
+        }
+
+        td strong,
+        td span,
+        td {
+            overflow-wrap: anywhere;
+        }
+
+        .clamp {
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 2;
+            overflow: hidden;
         }
 
         .row-actions {
             display: flex;
-            flex-wrap: wrap;
+            flex-wrap: nowrap;
             gap: 6px;
         }
 
@@ -358,27 +394,67 @@
         }
 
         .on_leave,
-        .blocked {
+        .blocked,
+        .warm {
             background: #fef3c7;
             color: #b45309;
         }
 
         body[data-theme="dark"] .on_leave,
-        body[data-theme="dark"] .blocked {
+        body[data-theme="dark"] .blocked,
+        body[data-theme="dark"] .warm {
             background: #78350f;
             color: #fde68a;
         }
 
         .not_started,
-        .in_progress {
+        .in_progress,
+        .new,
+        .contacted,
+        .cold {
             background: #dbeafe;
             color: #1d4ed8;
         }
 
         body[data-theme="dark"] .not_started,
-        body[data-theme="dark"] .in_progress {
+        body[data-theme="dark"] .in_progress,
+        body[data-theme="dark"] .new,
+        body[data-theme="dark"] .contacted,
+        body[data-theme="dark"] .cold {
             background: #1e3a8a;
             color: #bfdbfe;
+        }
+
+        .qualified,
+        .converted {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        body[data-theme="dark"] .qualified,
+        body[data-theme="dark"] .converted {
+            background: #14532d;
+            color: #bbf7d0;
+        }
+
+        .lost {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        body[data-theme="dark"] .lost {
+            background: #7f1d1d;
+            color: #fecaca;
+        }
+
+        .hot {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        body[data-theme="dark"] .hot {
+            background: #7f1d1d;
+            color: #fecaca;
         }
 
         progress {
@@ -457,6 +533,126 @@
                 <p class="muted">Average completion percentage per lead.</p>
                 <canvas id="team-progress-bar-chart"></canvas>
             </article>
+
+            <article class="chart-card">
+                <h2>Lead Grade Distribution</h2>
+                <p class="muted">Hot, warm, and cold scored leads.</p>
+                <canvas id="lead-grade-pie-chart"></canvas>
+                <div class="chart-legend" id="lead-grade-pie-legend"></div>
+            </article>
+        </section>
+
+        <section class="panel">
+            <h2 id="lead-form-title">Add Scored Lead</h2>
+            <div class="summary" id="lead-score-summary"></div>
+            <form id="lead-form">
+                <input type="hidden" id="lead-id">
+
+                <label>
+                    Full Name
+                    <input id="lead-full_name" required>
+                </label>
+
+                <label>
+                    Email
+                    <input id="lead-email" type="email">
+                </label>
+
+                <label>
+                    Phone
+                    <input id="lead-phone">
+                </label>
+
+                <label>
+                    Company
+                    <input id="lead-company_name">
+                </label>
+
+                <label>
+                    Industry
+                    <input id="lead-industry" placeholder="SaaS, Retail, Finance">
+                </label>
+
+                <label>
+                    Annual Revenue
+                    <input id="lead-annual_revenue" type="number" min="0" value="0">
+                </label>
+
+                <label>
+                    Source
+                    <select id="lead-source"></select>
+                </label>
+
+                <label>
+                    Assigned To
+                    <select id="lead-assigned_to"></select>
+                </label>
+
+                <label>
+                    Status
+                    <select id="lead-status"></select>
+                </label>
+
+                <label>
+                    Email Engagement
+                    <input id="lead-email_engagement" type="number" min="0" max="100" value="0">
+                </label>
+
+                <label>
+                    Social Engagement
+                    <input id="lead-social_engagement" type="number" min="0" max="100" value="0">
+                </label>
+
+                <label>
+                    Website Visits
+                    <input id="lead-website_visits" type="number" min="0" value="0">
+                </label>
+
+                <label>
+                    Form Submissions
+                    <input id="lead-form_submissions" type="number" min="0" value="0">
+                </label>
+
+                <label class="wide">
+                    Notes
+                    <textarea id="lead-notes"></textarea>
+                </label>
+
+                <div class="actions">
+                    <button class="primary" type="submit">Save Scored Lead</button>
+                    <button class="secondary" type="button" id="cancel-lead-edit">Cancel</button>
+                </div>
+            </form>
+        </section>
+
+        <section class="panel">
+            <h2>Lead Scoring</h2>
+            <div class="filters">
+                <input id="lead-search" placeholder="Search leads, company, industry">
+                <select id="lead-filter-grade"></select>
+                <select id="lead-filter-source"></select>
+                <button class="secondary" type="button" id="apply-lead-filters">Apply</button>
+                <button class="secondary" type="button" id="clear-lead-filters">Clear</button>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Lead</th>
+                            <th>Company</th>
+                            <th>Source</th>
+                            <th>Owner</th>
+                            <th>Status</th>
+                            <th>Engagement</th>
+                            <th>Behavior</th>
+                            <th>Revenue</th>
+                            <th>Score</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="lead-table"></tbody>
+                </table>
+            </div>
         </section>
 
         <section class="panel">
@@ -647,8 +843,10 @@
         const CSRF_TOKEN = "{{ csrf_token }}";
         const TEAM_API = "/api/team-leads/";
         const WORK_API = "/api/assigned-work/";
+        const LEAD_API = "/api/leads/";
         const teamLeads = [];
         const assignedWork = [];
+        const scoredLeads = [];
         let activeTeamLeadFilter = "";
         let activeTeamLeadFilterName = "";
 
@@ -691,6 +889,26 @@
                 ["high", "High"],
                 ["urgent", "Urgent"],
             ],
+            leadSource: [
+                ["website", "Website"],
+                ["social_media", "Social Media"],
+                ["email_campaign", "Email Campaign"],
+                ["event", "Event"],
+                ["referral", "Referral"],
+                ["paid_ads", "Paid Ads"],
+            ],
+            leadStatus: [
+                ["new", "New"],
+                ["contacted", "Contacted"],
+                ["qualified", "Qualified"],
+                ["converted", "Converted"],
+                ["lost", "Lost"],
+            ],
+            leadGrade: [
+                ["hot", "Hot"],
+                ["warm", "Warm"],
+                ["cold", "Cold"],
+            ],
         };
 
         const chartColors = ["#2563eb", "#f59e0b", "#22c55e", "#ef4444", "#8b5cf6", "#06b6d4", "#f97316", "#14b8a6"];
@@ -709,6 +927,22 @@
             "progress",
             "start_date",
             "due_date",
+            "notes",
+        ];
+        const leadFields = [
+            "full_name",
+            "email",
+            "phone",
+            "company_name",
+            "industry",
+            "annual_revenue",
+            "source",
+            "assigned_to",
+            "status",
+            "email_engagement",
+            "social_engagement",
+            "website_visits",
+            "form_submissions",
             "notes",
         ];
 
@@ -788,6 +1022,10 @@
             return document.getElementById(`work-${field}`);
         }
 
+        function leadInput(field) {
+            return document.getElementById(`lead-${field}`);
+        }
+
         function teamPayload() {
             return Object.fromEntries(teamFields.map((field) => [field, teamInput(field).value]));
         }
@@ -798,6 +1036,17 @@
             payload.progress = Number(payload.progress || 0);
             payload.start_date = payload.start_date || null;
             payload.due_date = payload.due_date || null;
+            return payload;
+        }
+
+        function leadPayload() {
+            const payload = Object.fromEntries(leadFields.map((field) => [field, leadInput(field).value]));
+            payload.assigned_to = payload.assigned_to ? Number(payload.assigned_to) : null;
+            payload.annual_revenue = Number(payload.annual_revenue || 0);
+            payload.email_engagement = Number(payload.email_engagement || 0);
+            payload.social_engagement = Number(payload.social_engagement || 0);
+            payload.website_visits = Number(payload.website_visits || 0);
+            payload.form_submissions = Number(payload.form_submissions || 0);
             return payload;
         }
 
@@ -819,6 +1068,20 @@
             workInput("status").value = "not_started";
             workInput("progress").value = 0;
             if (teamLeads[0]) workInput("team_lead").value = teamLeads[0].id;
+        }
+
+        function resetLeadForm() {
+            document.getElementById("lead-form").reset();
+            document.getElementById("lead-id").value = "";
+            document.getElementById("lead-form-title").textContent = "Add Scored Lead";
+            leadInput("annual_revenue").value = 0;
+            leadInput("source").value = "website";
+            leadInput("status").value = "new";
+            leadInput("email_engagement").value = 0;
+            leadInput("social_engagement").value = 0;
+            leadInput("website_visits").value = 0;
+            leadInput("form_submissions").value = 0;
+            if (teamLeads[0]) leadInput("assigned_to").value = teamLeads[0].id;
         }
 
         async function fetchJson(url, options = {}) {
@@ -870,6 +1133,21 @@
             renderWorkFilterNote();
         }
 
+        async function loadScoredLeads() {
+            const params = new URLSearchParams();
+            const search = document.getElementById("lead-search").value.trim();
+            const grade = document.getElementById("lead-filter-grade").value;
+            const source = document.getElementById("lead-filter-source").value;
+            if (search) params.set("search", search);
+            if (grade) params.set("lead_grade", grade);
+            if (source) params.set("source", source);
+
+            const data = await fetchJson(`${LEAD_API}?${params.toString()}`);
+            scoredLeads.splice(0, scoredLeads.length, ...data);
+            renderLeadScoreSummary(data);
+            renderLeadTable(data);
+        }
+
         function renderWorkFilterNote() {
             const note = document.getElementById("work-filter-note");
             note.textContent = activeTeamLeadFilterName ? `Viewing work for ${activeTeamLeadFilterName}` : "";
@@ -878,6 +1156,7 @@
         async function reloadAll() {
             await loadTeamLeads();
             await loadAssignedWork();
+            await loadScoredLeads();
             renderSummary();
         }
 
@@ -932,6 +1211,7 @@
             renderStatusPieChart();
             renderTeamWorkBarChart();
             renderTeamProgressBarChart();
+            renderLeadGradePieChart();
         }
 
         function renderStatusPieChart() {
@@ -984,6 +1264,67 @@
             legend.innerHTML = data.map((item, index) => `
                 <span class="legend-item">
                     <span class="legend-swatch" style="background:${chartColors[index % chartColors.length]}"></span>
+                    ${item.label}: ${item.count}
+                </span>
+            `).join("");
+        }
+
+        function renderLeadGradePieChart() {
+            const {ctx, width, height} = canvasContext("lead-grade-pie-chart");
+            const gradeColors = {
+                hot: "#ef4444",
+                warm: "#f59e0b",
+                cold: "#2563eb",
+            };
+            const data = choices.leadGrade
+                .map(([value, label]) => ({
+                    value,
+                    label,
+                    count: scoredLeads.filter((lead) => lead.lead_grade === value).length,
+                    color: gradeColors[value],
+                }))
+                .filter((item) => item.count > 0);
+            const total = data.reduce((sum, item) => sum + item.count, 0);
+            const legend = document.getElementById("lead-grade-pie-legend");
+
+            if (!total) {
+                legend.innerHTML = "";
+                drawEmptyChart(ctx, width, height);
+                return;
+            }
+
+            const radius = Math.min(width, height) * 0.34;
+            const cx = width / 2;
+            const cy = height / 2;
+            let start = -Math.PI / 2;
+
+            data.forEach((item) => {
+                const angle = (item.count / total) * Math.PI * 2;
+                ctx.beginPath();
+                ctx.moveTo(cx, cy);
+                ctx.arc(cx, cy, radius, start, start + angle);
+                ctx.closePath();
+                ctx.fillStyle = item.color;
+                ctx.fill();
+                start += angle;
+            });
+
+            ctx.fillStyle = cssColor("--panel");
+            ctx.beginPath();
+            ctx.arc(cx, cy, radius * 0.52, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = cssColor("--text");
+            ctx.font = "700 22px Arial";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.fillText(total, cx, cy - 8);
+            ctx.fillStyle = cssColor("--muted");
+            ctx.font = "12px Arial";
+            ctx.fillText("scored leads", cx, cy + 14);
+
+            legend.innerHTML = data.map((item) => `
+                <span class="legend-item">
+                    <span class="legend-swatch" style="background:${item.color}"></span>
                     ${item.label}: ${item.count}
                 </span>
             `).join("");
@@ -1075,20 +1416,47 @@
         }
 
         function renderTeamDropdown() {
-            const select = workInput("team_lead");
-            select.innerHTML = "";
+            const workSelect = workInput("team_lead");
+            const leadSelect = leadInput("assigned_to");
+            workSelect.innerHTML = "";
+            leadSelect.innerHTML = '<option value="">Unassigned</option>';
 
             if (!teamLeads.length) {
-                select.innerHTML = '<option value="">Add a team lead first</option>';
+                workSelect.innerHTML = '<option value="">Add a team lead first</option>';
                 return;
             }
 
             teamLeads.forEach((lead) => {
-                const option = document.createElement("option");
-                option.value = lead.id;
-                option.textContent = lead.full_name;
-                select.appendChild(option);
+                const workOption = document.createElement("option");
+                workOption.value = lead.id;
+                workOption.textContent = lead.full_name;
+                workSelect.appendChild(workOption);
+
+                const leadOption = document.createElement("option");
+                leadOption.value = lead.id;
+                leadOption.textContent = lead.full_name;
+                leadSelect.appendChild(leadOption);
             });
+        }
+
+        function renderLeadScoreSummary(data) {
+            const avgScore = data.length
+                ? Math.round(data.reduce((total, lead) => total + lead.lead_score, 0) / data.length)
+                : 0;
+            const metrics = [
+                ["Scored Leads", data.length],
+                ["Hot Leads", data.filter((lead) => lead.lead_grade === "hot").length],
+                ["Warm Leads", data.filter((lead) => lead.lead_grade === "warm").length],
+                ["Cold Leads", data.filter((lead) => lead.lead_grade === "cold").length],
+                ["Average Score", avgScore],
+            ];
+
+            document.getElementById("lead-score-summary").innerHTML = metrics.map(([label, value]) => `
+                <div class="metric">
+                    <strong>${value}</strong>
+                    <span>${label}</span>
+                </div>
+            `).join("");
         }
 
         function renderTeamTable(data) {
@@ -1127,7 +1495,7 @@
 
             tbody.innerHTML = data.map((work) => `
                 <tr>
-                    <td><strong>${escapeHtml(work.title)}</strong><br><span class="muted">${escapeHtml(work.responsibility)}</span></td>
+                    <td><strong>${escapeHtml(work.title)}</strong><br><span class="muted clamp">${escapeHtml(work.responsibility)}</span></td>
                     <td>${escapeHtml(work.team_lead_name)}</td>
                     <td>${escapeHtml(work.client_name)}</td>
                     <td>${escapeHtml(work.campaign_name)}<br><span class="muted">${labelFor(choices.campaignType, work.campaign_type)}</span></td>
@@ -1143,6 +1511,34 @@
                             ${iconButton({variant: "warning", label: "Mark Blocked", iconName: "alert", action: `updateWorkStatus(${work.id}, 'blocked')`})}
                             ${iconButton({variant: "success", label: "Mark Completed", iconName: "check", action: `updateWorkStatus(${work.id}, 'completed', 100)`})}
                             ${iconButton({variant: "danger", label: "Delete", iconName: "trash", action: `deleteWork(${work.id})`})}
+                        </div>
+                    </td>
+                </tr>
+            `).join("");
+        }
+
+        function renderLeadTable(data) {
+            const tbody = document.getElementById("lead-table");
+            if (!data.length) {
+                tbody.innerHTML = '<tr><td colspan="10" class="muted">No scored leads found.</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = data.map((lead) => `
+                <tr>
+                    <td><strong>${escapeHtml(lead.full_name)}</strong><br><span class="muted clamp">${escapeHtml(lead.email || lead.phone)}</span></td>
+                    <td>${escapeHtml(lead.company_name)}<br><span class="muted clamp">${escapeHtml(lead.industry)}</span></td>
+                    <td>${labelFor(choices.leadSource, lead.source)}</td>
+                    <td>${escapeHtml(lead.assigned_to_name || "Unassigned")}</td>
+                    <td><span class="badge ${lead.status}">${labelFor(choices.leadStatus, lead.status)}</span></td>
+                    <td>Email ${lead.email_engagement}%<br><span class="muted">Social ${lead.social_engagement}%</span></td>
+                    <td>${lead.website_visits} visits<br><span class="muted">${lead.form_submissions} forms</span></td>
+                    <td>${Number(lead.annual_revenue || 0).toLocaleString()}</td>
+                    <td><strong>${lead.lead_score}</strong><br><span class="badge ${lead.lead_grade}">${labelFor(choices.leadGrade, lead.lead_grade)}</span></td>
+                    <td>
+                        <div class="row-actions">
+                            ${iconButton({label: "Edit", iconName: "edit", action: `editLead(${lead.id})`})}
+                            ${iconButton({variant: "danger", label: "Delete", iconName: "trash", action: `deleteLead(${lead.id})`})}
                         </div>
                     </td>
                 </tr>
@@ -1218,6 +1614,27 @@
             }
         }
 
+        async function saveLead(event) {
+            event.preventDefault();
+            const id = document.getElementById("lead-id").value;
+            const url = id ? `${LEAD_API}${id}/` : LEAD_API;
+            const method = id ? "PUT" : "POST";
+
+            try {
+                await fetchJson(url, {
+                    method,
+                    headers: {"Content-Type": "application/json"},
+                    body: JSON.stringify(leadPayload()),
+                });
+                setMessage(id ? "Scored lead updated." : "Scored lead added.");
+                resetLeadForm();
+                await loadScoredLeads();
+                renderCharts();
+            } catch (error) {
+                setMessage(error.message, true);
+            }
+        }
+
         function editWork(id) {
             const work = assignedWork.find((item) => item.id === id);
             if (!work) return;
@@ -1228,6 +1645,18 @@
             });
             document.getElementById("work-form-title").textContent = "Edit Assigned Work";
             window.scrollTo({top: document.getElementById("work-form").offsetTop - 20, behavior: "smooth"});
+        }
+
+        function editLead(id) {
+            const lead = scoredLeads.find((item) => item.id === id);
+            if (!lead) return;
+
+            document.getElementById("lead-id").value = lead.id;
+            leadFields.forEach((field) => {
+                leadInput(field).value = lead[field] ?? "";
+            });
+            document.getElementById("lead-form-title").textContent = `Edit Scored Lead (${lead.lead_score})`;
+            window.scrollTo({top: document.getElementById("lead-form").offsetTop - 20, behavior: "smooth"});
         }
 
         async function updateWorkStatus(id, status, progress = null) {
@@ -1259,6 +1688,19 @@
             }
         }
 
+        async function deleteLead(id) {
+            if (!confirm("Delete this scored lead?")) return;
+
+            try {
+                await fetchJson(`${LEAD_API}${id}/`, {method: "DELETE"});
+                setMessage("Scored lead deleted.");
+                await loadScoredLeads();
+                renderCharts();
+            } catch (error) {
+                setMessage(error.message, true);
+            }
+        }
+
         async function filterWorkByTeam(id) {
             const lead = teamLeads.find((item) => item.id === id);
             activeTeamLeadFilter = String(id);
@@ -1281,15 +1723,21 @@
             fillOptions("work-status", choices.workStatus);
             fillOptions("work-filter-status", choices.workStatus, true);
             fillOptions("work-filter-priority", choices.priority, true);
+            fillOptions("lead-source", choices.leadSource);
+            fillOptions("lead-status", choices.leadStatus);
+            fillOptions("lead-filter-grade", choices.leadGrade, true);
+            fillOptions("lead-filter-source", choices.leadSource, true);
 
             document.getElementById("team-form").addEventListener("submit", saveTeamLead);
             document.getElementById("work-form").addEventListener("submit", saveWork);
+            document.getElementById("lead-form").addEventListener("submit", saveLead);
             document.getElementById("theme-toggle").addEventListener("click", () => {
                 applyTheme(document.body.dataset.theme === "dark" ? "light" : "dark");
             });
             window.addEventListener("resize", renderCharts);
             document.getElementById("cancel-team-edit").addEventListener("click", resetTeamForm);
             document.getElementById("cancel-work-edit").addEventListener("click", resetWorkForm);
+            document.getElementById("cancel-lead-edit").addEventListener("click", resetLeadForm);
             document.getElementById("apply-team-filters").addEventListener("click", async () => {
                 await loadTeamLeads();
                 renderSummary();
@@ -1313,11 +1761,26 @@
                 await loadAssignedWork();
                 renderSummary();
             });
+            document.getElementById("apply-lead-filters").addEventListener("click", async () => {
+                await loadScoredLeads();
+                renderCharts();
+            });
+            document.getElementById("clear-lead-filters").addEventListener("click", async () => {
+                document.getElementById("lead-search").value = "";
+                document.getElementById("lead-filter-grade").value = "";
+                document.getElementById("lead-filter-source").value = "";
+                await loadScoredLeads();
+                renderCharts();
+            });
 
             initTheme();
             resetTeamForm();
             resetWorkForm();
-            reloadAll().then(resetWorkForm);
+            resetLeadForm();
+            reloadAll().then(() => {
+                resetWorkForm();
+                resetLeadForm();
+            });
         }
 
         init();

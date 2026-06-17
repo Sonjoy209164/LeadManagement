@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import AssignedWork, TeamLead
+from .models import AssignedWork, Lead, TeamLead
 
 
 class TeamLeadSerializer(serializers.ModelSerializer):
@@ -40,5 +40,23 @@ class AssignedWorkSerializer(serializers.ModelSerializer):
 
         if progress == 100 and status not in ("completed", "cancelled"):
             attrs["status"] = "completed"
+
+        return attrs
+
+
+class LeadSerializer(serializers.ModelSerializer):
+    assigned_to_name = serializers.CharField(source="assigned_to.full_name", read_only=True)
+
+    class Meta:
+        model = Lead
+        fields = "__all__"
+        read_only_fields = ("lead_score", "lead_grade", "created_at", "updated_at")
+
+    def validate(self, attrs):
+        email = attrs.get("email", getattr(self.instance, "email", ""))
+        phone = attrs.get("phone", getattr(self.instance, "phone", ""))
+
+        if not email and not phone:
+            raise serializers.ValidationError("Either email or phone is required.")
 
         return attrs
