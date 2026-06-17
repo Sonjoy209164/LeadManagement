@@ -156,6 +156,118 @@
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
         }
 
+        .lead-generation {
+            background: var(--panel);
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            padding: 22px;
+        }
+
+        .lead-generation-header {
+            margin: 0 auto 18px;
+            max-width: 760px;
+            text-align: center;
+        }
+
+        .lead-generation-header h2 {
+            font-size: 26px;
+            margin-bottom: 8px;
+        }
+
+        .capture-grid {
+            display: grid;
+            gap: 14px;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        }
+
+        .capture-card {
+            background: var(--metric);
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            min-height: 260px;
+            overflow: hidden;
+        }
+
+        .capture-card h3 {
+            font-size: 15px;
+            margin: 0;
+            padding: 12px 14px;
+        }
+
+        .capture-body {
+            border-top: 1px solid var(--line);
+            padding: 12px;
+        }
+
+        .mock-form {
+            display: grid;
+            gap: 9px;
+        }
+
+        .mock-row {
+            align-items: center;
+            display: grid;
+            gap: 10px;
+            grid-template-columns: 86px 1fr;
+        }
+
+        .mock-input {
+            background: var(--field);
+            border: 1px solid var(--field-border);
+            border-radius: 5px;
+            height: 26px;
+        }
+
+        .mock-actions {
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+            margin-top: 6px;
+        }
+
+        .mini-button {
+            background: var(--primary);
+            border-radius: 5px;
+            color: #fff;
+            font-size: 11px;
+            padding: 6px 10px;
+        }
+
+        .source-stat {
+            align-items: center;
+            display: flex;
+            gap: 10px;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .source-stat strong {
+            font-size: 28px;
+        }
+
+        .feed-item,
+        .chat-item {
+            border-top: 1px solid var(--line);
+            padding: 10px 0;
+        }
+
+        .feed-item:first-child,
+        .chat-item:first-child {
+            border-top: 0;
+        }
+
+        .feed-item strong,
+        .chat-item strong {
+            display: block;
+            margin-bottom: 3px;
+        }
+
+        .chat-meta {
+            display: flex;
+            gap: 8px;
+            justify-content: space-between;
+        }
+
         .chart-card {
             background: var(--panel);
             border: 1px solid var(--line);
@@ -579,6 +691,55 @@
         <div class="view-panel active" data-view-panel="overview">
             <section class="summary" id="summary"></section>
 
+            <section class="lead-generation">
+                <div class="lead-generation-header">
+                    <h2>Lead Generation Intake</h2>
+                    <p class="muted">Capture leads from forms, social activity, and live chat, then score and route them automatically.</p>
+                </div>
+                <div class="capture-grid">
+                    <article class="capture-card">
+                        <h3>Form</h3>
+                        <div class="capture-body">
+                            <div class="source-stat">
+                                <span class="muted">Form leads</span>
+                                <strong id="form-lead-count">0</strong>
+                            </div>
+                            <div class="mock-form" aria-hidden="true">
+                                <div class="mock-row"><span>First Name</span><span class="mock-input"></span></div>
+                                <div class="mock-row"><span>Email</span><span class="mock-input"></span></div>
+                                <div class="mock-row"><span>Company</span><span class="mock-input"></span></div>
+                                <div class="mock-row"><span>Phone</span><span class="mock-input"></span></div>
+                                <div class="mock-actions">
+                                    <span class="mini-button">Submit</span>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="capture-card">
+                        <h3>Social</h3>
+                        <div class="capture-body">
+                            <div class="source-stat">
+                                <span class="muted">Social leads</span>
+                                <strong id="social-lead-count">0</strong>
+                            </div>
+                            <div id="social-lead-feed"></div>
+                        </div>
+                    </article>
+
+                    <article class="capture-card">
+                        <h3>Chat</h3>
+                        <div class="capture-body">
+                            <div class="source-stat">
+                                <span class="muted">Chat leads</span>
+                                <strong id="chat-lead-count">0</strong>
+                            </div>
+                            <div id="chat-lead-feed"></div>
+                        </div>
+                    </article>
+                </div>
+            </section>
+
             <section class="charts" aria-label="Dashboard charts">
                 <article class="chart-card">
                     <h2>Work Status Distribution</h2>
@@ -998,7 +1159,9 @@
                 ["urgent", "Urgent"],
             ],
             leadSource: [
+                ["form", "Form"],
                 ["website", "Website"],
+                ["chat", "Chat"],
                 ["social_media", "Social Media"],
                 ["email_campaign", "Email Campaign"],
                 ["event", "Event"],
@@ -1267,6 +1430,7 @@
             scoredLeads.splice(0, scoredLeads.length, ...data);
             renderLeadScoreSummary(data);
             renderLeadTable(data);
+            renderLeadGenerationIntake();
         }
 
         function renderWorkFilterNote() {
@@ -1334,6 +1498,35 @@
             renderTeamProgressBarChart();
             renderLeadGradePieChart();
             renderLeadOwnerBarChart();
+        }
+
+        function renderLeadGenerationIntake() {
+            const formLeads = scoredLeads.filter((lead) => ["form", "website"].includes(lead.source));
+            const socialLeads = scoredLeads.filter((lead) => lead.source === "social_media");
+            const chatLeads = scoredLeads.filter((lead) => lead.source === "chat");
+
+            document.getElementById("form-lead-count").textContent = formLeads.length;
+            document.getElementById("social-lead-count").textContent = socialLeads.length;
+            document.getElementById("chat-lead-count").textContent = chatLeads.length;
+            document.getElementById("social-lead-feed").innerHTML = sourceFeed(socialLeads, "No social leads yet.");
+            document.getElementById("chat-lead-feed").innerHTML = sourceFeed(chatLeads, "No chat leads yet.", true);
+        }
+
+        function sourceFeed(leads, emptyText, isChat = false) {
+            if (!leads.length) {
+                return `<p class="muted">${emptyText}</p>`;
+            }
+
+            return leads.slice(0, 3).map((lead) => `
+                <div class="${isChat ? "chat-item" : "feed-item"}">
+                    <strong>${escapeHtml(lead.full_name)}</strong>
+                    <div class="muted">${escapeHtml(lead.company_name || lead.industry || "Unknown company")}</div>
+                    <div class="${isChat ? "chat-meta" : ""}">
+                        <span class="badge ${lead.lead_grade}">${labelFor(choices.leadGrade, lead.lead_grade)}</span>
+                        <span class="muted">Score ${lead.lead_score}</span>
+                    </div>
+                </div>
+            `).join("");
         }
 
         function renderStatusPieChart() {

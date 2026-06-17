@@ -10,6 +10,7 @@ Internal Django dashboard for managers to track marketing team leads, assigned c
 - Work status and progress tracking
 - Lead scoring based on engagement, behavior, industry fit, and revenue
 - Automatic lead assignment to the best available team lead
+- Lead generation intake overview for form, social, and chat sources
 - Search and filters
 - Summary cards
 - Dark mode
@@ -118,6 +119,19 @@ warm
 cold
 ```
 
+Lead sources:
+
+```text
+form
+website
+chat
+social_media
+email_campaign
+event
+referral
+paid_ads
+```
+
 ## Lead Scoring
 
 The backend calculates `lead_score` automatically when a lead is saved.
@@ -200,6 +214,7 @@ Average Score
 Charts include:
 
 ```text
+Lead Generation Intake
 Work Status Distribution
 Workload By Team Lead
 Average Progress By Team Lead
@@ -231,4 +246,3 @@ Current local database includes:
 20 assigned work records
 20 scored leads
 ```
-

@@ -112,7 +112,9 @@ class AssignedWork(models.Model):
 
 class Lead(models.Model):
     class Source(models.TextChoices):
+        FORM = "form", "Form"
         WEBSITE = "website", "Website"
+        CHAT = "chat", "Chat"
         SOCIAL_MEDIA = "social_media", "Social Media"
         EMAIL_CAMPAIGN = "email_campaign", "Email Campaign"
         EVENT = "event", "Event"
@@ -229,10 +231,12 @@ class Lead(models.Model):
 
     def target_specialization(self):
         source_map = {
+            self.Source.FORM: "Lead Generation",
             self.Source.PAID_ADS: "Paid Ads",
             self.Source.SOCIAL_MEDIA: "Social Media",
             self.Source.WEBSITE: "SEO",
             self.Source.EMAIL_CAMPAIGN: "Email",
+            self.Source.CHAT: "Lead Generation",
         }
         return source_map.get(self.source, "")
 

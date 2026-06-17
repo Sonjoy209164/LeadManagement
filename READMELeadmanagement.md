@@ -170,7 +170,9 @@ updated_at
 Source choices:
 
 ```text
+form
 website
+chat
 social_media
 email_campaign
 event
@@ -338,6 +340,7 @@ DELETE /api/leads/{id}/
 
 ```text
 Summary cards
+Lead generation intake
 Charts
 Lead scoring form
 Lead scoring table
@@ -370,6 +373,7 @@ Average Score
 ## Charts
 
 ```text
+Lead Generation Intake
 Work Status Distribution
 Workload By Team Lead
 Average Progress By Team Lead
@@ -413,4 +417,3 @@ Leads Per Team Lead
 20 assigned work records
 20 scored leads
 ```
-
