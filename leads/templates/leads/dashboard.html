@@ -1,0 +1,1326 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Marketing Team Lead Management</title>
+    <style>
+        :root,
+        body[data-theme="light"] {
+            --bg: #f5f7fb;
+            --panel: #ffffff;
+            --text: #172033;
+            --muted: #64748b;
+            --line: #d8dee9;
+            --primary: #2563eb;
+            --danger: #dc2626;
+            --success: #15803d;
+            --warning: #b45309;
+            --control: #e2e8f0;
+            --control-text: #172033;
+            --field: #ffffff;
+            --field-text: #172033;
+            --field-border: #d8dee9;
+            --metric: #ffffff;
+        }
+
+        body[data-theme="dark"] {
+            --bg: #111827;
+            --panel: #1f2937;
+            --text: #f8fafc;
+            --muted: #aab6c5;
+            --line: #334155;
+            --primary: #3b82f6;
+            --danger: #ef4444;
+            --success: #22c55e;
+            --warning: #f59e0b;
+            --control: #334155;
+            --control-text: #f8fafc;
+            --field: #111827;
+            --field-text: #f8fafc;
+            --field-border: #475569;
+            --metric: #172033;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--text);
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+        }
+
+        header {
+            align-items: center;
+            background: var(--panel);
+            border-bottom: 1px solid var(--line);
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+            padding: 18px 24px;
+        }
+
+        .header-copy {
+            display: grid;
+            gap: 4px;
+        }
+
+        h1,
+        h2 {
+            margin: 0;
+        }
+
+        h1 {
+            font-size: 24px;
+        }
+
+        h2 {
+            font-size: 18px;
+        }
+
+        main {
+            display: grid;
+            gap: 18px;
+            padding: 20px 24px 32px;
+        }
+
+        .summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 12px;
+        }
+
+        .metric,
+        .panel {
+            background: var(--panel);
+            border: 1px solid var(--line);
+            border-radius: 8px;
+        }
+
+        .metric {
+            background: var(--metric);
+            padding: 14px;
+        }
+
+        .metric strong {
+            display: block;
+            font-size: 24px;
+            margin-bottom: 4px;
+        }
+
+        .charts {
+            display: grid;
+            gap: 12px;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        }
+
+        .chart-card {
+            background: var(--panel);
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            min-width: 0;
+            padding: 18px;
+        }
+
+        .chart-card h2 {
+            font-size: 16px;
+            margin-bottom: 4px;
+        }
+
+        .chart-card canvas {
+            display: block;
+            height: 260px;
+            margin-top: 12px;
+            width: 100%;
+        }
+
+        .chart-legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px 12px;
+            margin-top: 10px;
+        }
+
+        .legend-item {
+            align-items: center;
+            color: var(--muted);
+            display: inline-flex;
+            font-size: 12px;
+            gap: 6px;
+        }
+
+        .legend-swatch {
+            border-radius: 999px;
+            display: inline-block;
+            height: 10px;
+            width: 10px;
+        }
+
+        .muted,
+        .metric span {
+            color: var(--muted);
+        }
+
+        .panel {
+            padding: 18px;
+        }
+
+        form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 12px;
+            margin-top: 14px;
+        }
+
+        label {
+            display: grid;
+            gap: 5px;
+            color: var(--muted);
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        input,
+        select,
+        textarea {
+            background: var(--field);
+            width: 100%;
+            border: 1px solid var(--field-border);
+            border-radius: 6px;
+            color: var(--field-text);
+            font: inherit;
+            padding: 9px 10px;
+        }
+
+        textarea {
+            min-height: 76px;
+            resize: vertical;
+        }
+
+        .wide {
+            grid-column: 1 / -1;
+        }
+
+        .actions,
+        .filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .actions {
+            grid-column: 1 / -1;
+        }
+
+        .filters {
+            margin-top: 14px;
+        }
+
+        .filter-note {
+            min-height: 20px;
+        }
+
+        button {
+            border: 0;
+            border-radius: 6px;
+            cursor: pointer;
+            font: inherit;
+            padding: 9px 12px;
+        }
+
+        .primary {
+            background: var(--primary);
+            color: #fff;
+        }
+
+        .secondary {
+            background: var(--control);
+            color: var(--control-text);
+        }
+
+        .danger {
+            background: var(--danger);
+            color: #fff;
+        }
+
+        .success {
+            background: var(--success);
+            color: #fff;
+        }
+
+        .warning {
+            background: var(--warning);
+            color: #fff;
+        }
+
+        .table-wrap {
+            overflow-x: auto;
+            margin-top: 14px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 980px;
+        }
+
+        th,
+        td {
+            border-bottom: 1px solid var(--line);
+            padding: 10px;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        th {
+            color: var(--muted);
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+
+        .row-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .row-actions button {
+            align-items: center;
+            display: inline-flex;
+            height: 32px;
+            justify-content: center;
+            padding: 0;
+            width: 32px;
+        }
+
+        .icon {
+            display: block;
+            height: 16px;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            stroke: currentColor;
+            stroke-width: 2;
+            width: 16px;
+        }
+
+        .toolbar {
+            align-items: center;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        .theme-toggle {
+            align-items: center;
+            display: inline-flex;
+            gap: 8px;
+            white-space: nowrap;
+        }
+
+        .badge {
+            border-radius: 999px;
+            display: inline-block;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 4px 8px;
+            text-transform: capitalize;
+        }
+
+        .active,
+        .completed {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        body[data-theme="dark"] .active,
+        body[data-theme="dark"] .completed {
+            background: #14532d;
+            color: #bbf7d0;
+        }
+
+        .inactive,
+        .cancelled {
+            background: #e2e8f0;
+            color: #475569;
+        }
+
+        body[data-theme="dark"] .inactive,
+        body[data-theme="dark"] .cancelled {
+            background: #334155;
+            color: #cbd5e1;
+        }
+
+        .on_leave,
+        .blocked {
+            background: #fef3c7;
+            color: #b45309;
+        }
+
+        body[data-theme="dark"] .on_leave,
+        body[data-theme="dark"] .blocked {
+            background: #78350f;
+            color: #fde68a;
+        }
+
+        .not_started,
+        .in_progress {
+            background: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        body[data-theme="dark"] .not_started,
+        body[data-theme="dark"] .in_progress {
+            background: #1e3a8a;
+            color: #bfdbfe;
+        }
+
+        progress {
+            width: 110px;
+            height: 12px;
+        }
+
+        #message {
+            min-height: 20px;
+            color: var(--muted);
+        }
+
+        .logout-form {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 0;
+        }
+
+        .logout-form button {
+            padding: 8px 10px;
+        }
+
+        @media (max-width: 720px) {
+            header {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            header,
+            main {
+                padding-left: 14px;
+                padding-right: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-copy">
+            <h1>Marketing Team Lead Management</h1>
+            <p class="muted">Manage team leads and track assigned campaign work.</p>
+        </div>
+        <div class="toolbar">
+            <button class="secondary theme-toggle" id="theme-toggle" type="button" aria-label="Toggle dark mode">
+                <span id="theme-icon"></span>
+                <span id="theme-label">Dark</span>
+            </button>
+            <form class="logout-form" method="post" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <span class="muted">{{ request.user.username }}</span>
+                <button class="secondary" type="submit">Logout</button>
+            </form>
+        </div>
+    </header>
+
+    <main>
+        <section class="summary" id="summary"></section>
+
+        <section class="charts" aria-label="Dashboard charts">
+            <article class="chart-card">
+                <h2>Work Status Distribution</h2>
+                <p class="muted">Assigned work grouped by current status.</p>
+                <canvas id="status-pie-chart"></canvas>
+                <div class="chart-legend" id="status-pie-legend"></div>
+            </article>
+
+            <article class="chart-card">
+                <h2>Workload By Team Lead</h2>
+                <p class="muted">Number of assigned work items per lead.</p>
+                <canvas id="team-work-bar-chart"></canvas>
+            </article>
+
+            <article class="chart-card">
+                <h2>Average Progress By Team Lead</h2>
+                <p class="muted">Average completion percentage per lead.</p>
+                <canvas id="team-progress-bar-chart"></canvas>
+            </article>
+        </section>
+
+        <section class="panel">
+            <h2 id="team-form-title">Add Team Lead</h2>
+            <form id="team-form">
+                <input type="hidden" id="team-id">
+
+                <label>
+                    Full Name
+                    <input id="team-full_name" required>
+                </label>
+
+                <label>
+                    Email
+                    <input id="team-email" type="email" required>
+                </label>
+
+                <label>
+                    Phone
+                    <input id="team-phone">
+                </label>
+
+                <label>
+                    Department
+                    <input id="team-department" required>
+                </label>
+
+                <label>
+                    Designation
+                    <input id="team-designation" value="Marketing Team Lead" required>
+                </label>
+
+                <label>
+                    Specialization
+                    <input id="team-specialization">
+                </label>
+
+                <label>
+                    Status
+                    <select id="team-status"></select>
+                </label>
+
+                <div class="actions">
+                    <button class="primary" type="submit">Save Team Lead</button>
+                    <button class="secondary" type="button" id="cancel-team-edit">Cancel</button>
+                    <span id="message"></span>
+                </div>
+            </form>
+        </section>
+
+        <section class="panel">
+            <h2>Team Leads</h2>
+            <div class="filters">
+                <input id="team-search" placeholder="Search team leads">
+                <select id="team-filter-status"></select>
+                <button class="secondary" type="button" id="apply-team-filters">Apply</button>
+                <button class="secondary" type="button" id="clear-team-filters">Clear</button>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Contact</th>
+                            <th>Department</th>
+                            <th>Designation</th>
+                            <th>Specialization</th>
+                            <th>Status</th>
+                            <th>Work Count</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="team-table"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="panel">
+            <h2 id="work-form-title">Assign Work</h2>
+            <form id="work-form">
+                <input type="hidden" id="work-id">
+
+                <label>
+                    Team Lead
+                    <select id="work-team_lead" required></select>
+                </label>
+
+                <label>
+                    Title
+                    <input id="work-title" required>
+                </label>
+
+                <label>
+                    Client
+                    <input id="work-client_name">
+                </label>
+
+                <label>
+                    Campaign
+                    <input id="work-campaign_name" required>
+                </label>
+
+                <label>
+                    Campaign Type
+                    <select id="work-campaign_type"></select>
+                </label>
+
+                <label>
+                    Channel
+                    <select id="work-channel"></select>
+                </label>
+
+                <label>
+                    Priority
+                    <select id="work-priority"></select>
+                </label>
+
+                <label>
+                    Status
+                    <select id="work-status"></select>
+                </label>
+
+                <label>
+                    Progress
+                    <input id="work-progress" type="number" min="0" max="100" value="0">
+                </label>
+
+                <label>
+                    Start Date
+                    <input id="work-start_date" type="date">
+                </label>
+
+                <label>
+                    Due Date
+                    <input id="work-due_date" type="date">
+                </label>
+
+                <label class="wide">
+                    Responsibility
+                    <textarea id="work-responsibility" required></textarea>
+                </label>
+
+                <label class="wide">
+                    Notes
+                    <textarea id="work-notes"></textarea>
+                </label>
+
+                <div class="actions">
+                    <button class="primary" type="submit">Save Assigned Work</button>
+                    <button class="secondary" type="button" id="cancel-work-edit">Cancel</button>
+                </div>
+            </form>
+        </section>
+
+        <section class="panel" id="assigned-work-panel">
+            <h2>Assigned Work</h2>
+            <div class="filters">
+                <input id="work-search" placeholder="Search work, client, campaign, team lead">
+                <select id="work-filter-status"></select>
+                <select id="work-filter-priority"></select>
+                <button class="secondary" type="button" id="apply-work-filters">Apply</button>
+                <button class="secondary" type="button" id="clear-work-filters">Clear</button>
+                <span class="muted filter-note" id="work-filter-note"></span>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Team Lead</th>
+                            <th>Client</th>
+                            <th>Campaign</th>
+                            <th>Channel</th>
+                            <th>Priority</th>
+                            <th>Status</th>
+                            <th>Progress</th>
+                            <th>Due Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="work-table"></tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        const CSRF_TOKEN = "{{ csrf_token }}";
+        const TEAM_API = "/api/team-leads/";
+        const WORK_API = "/api/assigned-work/";
+        const teamLeads = [];
+        const assignedWork = [];
+        let activeTeamLeadFilter = "";
+        let activeTeamLeadFilterName = "";
+
+        const choices = {
+            teamStatus: [
+                ["active", "Active"],
+                ["inactive", "Inactive"],
+                ["on_leave", "On Leave"],
+            ],
+            campaignType: [
+                ["seo", "SEO"],
+                ["social_media", "Social Media"],
+                ["paid_ads", "Paid Ads"],
+                ["email", "Email"],
+                ["content", "Content"],
+                ["event", "Event"],
+                ["brand_awareness", "Brand Awareness"],
+                ["lead_generation", "Lead Generation"],
+            ],
+            channel: [
+                ["facebook", "Facebook"],
+                ["instagram", "Instagram"],
+                ["google_ads", "Google Ads"],
+                ["linkedin", "LinkedIn"],
+                ["email", "Email"],
+                ["website", "Website"],
+                ["youtube", "YouTube"],
+                ["offline_event", "Offline Event"],
+            ],
+            workStatus: [
+                ["not_started", "Not Started"],
+                ["in_progress", "In Progress"],
+                ["blocked", "Blocked"],
+                ["completed", "Completed"],
+                ["cancelled", "Cancelled"],
+            ],
+            priority: [
+                ["low", "Low"],
+                ["medium", "Medium"],
+                ["high", "High"],
+                ["urgent", "Urgent"],
+            ],
+        };
+
+        const chartColors = ["#2563eb", "#f59e0b", "#22c55e", "#ef4444", "#8b5cf6", "#06b6d4", "#f97316", "#14b8a6"];
+
+        const teamFields = ["full_name", "email", "phone", "department", "designation", "specialization", "status"];
+        const workFields = [
+            "team_lead",
+            "title",
+            "client_name",
+            "campaign_name",
+            "campaign_type",
+            "channel",
+            "responsibility",
+            "priority",
+            "status",
+            "progress",
+            "start_date",
+            "due_date",
+            "notes",
+        ];
+
+        function fillOptions(id, values, includeAll = false) {
+            const select = document.getElementById(id);
+            select.innerHTML = includeAll ? '<option value="">All</option>' : "";
+            values.forEach(([value, label]) => {
+                const option = document.createElement("option");
+                option.value = value;
+                option.textContent = label;
+                select.appendChild(option);
+            });
+        }
+
+        function labelFor(values, value) {
+            const found = values.find(([key]) => key === value);
+            return found ? found[1] : value || "";
+        }
+
+        function escapeHtml(value) {
+            return String(value || "")
+                .replaceAll("&", "&amp;")
+                .replaceAll("<", "&lt;")
+                .replaceAll(">", "&gt;")
+                .replaceAll('"', "&quot;")
+                .replaceAll("'", "&#039;");
+        }
+
+        function icon(name) {
+            const icons = {
+                edit: '<svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg>',
+                eye: '<svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>',
+                trash: '<svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v5"/><path d="M14 11v5"/></svg>',
+                play: '<svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M8 5v14l11-7-11-7z"/></svg>',
+                alert: '<svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M10.3 4.2 2.4 18a2 2 0 0 0 1.7 3h15.8a2 2 0 0 0 1.7-3L13.7 4.2a2 2 0 0 0-3.4 0z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>',
+                check: '<svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>',
+                moon: '<svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M21 12.8A8.5 8.5 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/></svg>',
+                sun: '<svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.9 4.9 1.4 1.4"/><path d="m17.7 17.7 1.4 1.4"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m4.9 19.1 1.4-1.4"/><path d="m17.7 6.3 1.4-1.4"/></svg>',
+            };
+
+            return icons[name] || "";
+        }
+
+        function iconButton({variant = "secondary", label, iconName, action}) {
+            return `<button class="${variant}" type="button" aria-label="${label}" title="${label}" onclick="${action}">${icon(iconName)}</button>`;
+        }
+
+        function setMessage(text, isError = false) {
+            const message = document.getElementById("message");
+            message.textContent = text;
+            message.style.color = isError ? "var(--danger)" : "var(--muted)";
+        }
+
+        function cssColor(name) {
+            return getComputedStyle(document.body).getPropertyValue(name).trim();
+        }
+
+        function applyTheme(theme) {
+            document.body.dataset.theme = theme;
+            localStorage.setItem("theme", theme);
+            document.getElementById("theme-icon").innerHTML = icon(theme === "dark" ? "sun" : "moon");
+            document.getElementById("theme-label").textContent = theme === "dark" ? "Light" : "Dark";
+            renderCharts();
+        }
+
+        function initTheme() {
+            const savedTheme = localStorage.getItem("theme");
+            const preferredTheme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+            applyTheme(savedTheme || preferredTheme);
+        }
+
+        function teamInput(field) {
+            return document.getElementById(`team-${field}`);
+        }
+
+        function workInput(field) {
+            return document.getElementById(`work-${field}`);
+        }
+
+        function teamPayload() {
+            return Object.fromEntries(teamFields.map((field) => [field, teamInput(field).value]));
+        }
+
+        function workPayload() {
+            const payload = Object.fromEntries(workFields.map((field) => [field, workInput(field).value]));
+            payload.team_lead = Number(payload.team_lead);
+            payload.progress = Number(payload.progress || 0);
+            payload.start_date = payload.start_date || null;
+            payload.due_date = payload.due_date || null;
+            return payload;
+        }
+
+        function resetTeamForm() {
+            document.getElementById("team-form").reset();
+            document.getElementById("team-id").value = "";
+            document.getElementById("team-form-title").textContent = "Add Team Lead";
+            teamInput("designation").value = "Marketing Team Lead";
+            teamInput("status").value = "active";
+        }
+
+        function resetWorkForm() {
+            document.getElementById("work-form").reset();
+            document.getElementById("work-id").value = "";
+            document.getElementById("work-form-title").textContent = "Assign Work";
+            workInput("campaign_type").value = "paid_ads";
+            workInput("channel").value = "facebook";
+            workInput("priority").value = "medium";
+            workInput("status").value = "not_started";
+            workInput("progress").value = 0;
+            if (teamLeads[0]) workInput("team_lead").value = teamLeads[0].id;
+        }
+
+        async function fetchJson(url, options = {}) {
+            const method = (options.method || "GET").toUpperCase();
+            const headers = {
+                "Accept": "application/json",
+                ...(options.headers || {}),
+            };
+
+            if (!["GET", "HEAD", "OPTIONS", "TRACE"].includes(method)) {
+                headers["X-CSRFToken"] = CSRF_TOKEN;
+            }
+
+            const response = await fetch(url, {...options, headers});
+            if (!response.ok) {
+                const error = await response.json().catch(() => ({}));
+                throw new Error(JSON.stringify(error));
+            }
+            if (response.status === 204) return null;
+            return response.json();
+        }
+
+        async function loadTeamLeads() {
+            const params = new URLSearchParams();
+            const search = document.getElementById("team-search").value.trim();
+            const status = document.getElementById("team-filter-status").value;
+            if (search) params.set("search", search);
+            if (status) params.set("status", status);
+
+            const data = await fetchJson(`${TEAM_API}?${params.toString()}`);
+            teamLeads.splice(0, teamLeads.length, ...data);
+            renderTeamDropdown();
+            renderTeamTable(data);
+        }
+
+        async function loadAssignedWork() {
+            const params = new URLSearchParams();
+            const search = document.getElementById("work-search").value.trim();
+            const status = document.getElementById("work-filter-status").value;
+            const priority = document.getElementById("work-filter-priority").value;
+            if (activeTeamLeadFilter) params.set("team_lead", activeTeamLeadFilter);
+            if (search) params.set("search", search);
+            if (status) params.set("status", status);
+            if (priority) params.set("priority", priority);
+
+            const data = await fetchJson(`${WORK_API}?${params.toString()}`);
+            assignedWork.splice(0, assignedWork.length, ...data);
+            renderWorkTable(data);
+            renderWorkFilterNote();
+        }
+
+        function renderWorkFilterNote() {
+            const note = document.getElementById("work-filter-note");
+            note.textContent = activeTeamLeadFilterName ? `Viewing work for ${activeTeamLeadFilterName}` : "";
+        }
+
+        async function reloadAll() {
+            await loadTeamLeads();
+            await loadAssignedWork();
+            renderSummary();
+        }
+
+        function renderSummary() {
+            const avgProgress = assignedWork.length
+                ? Math.round(assignedWork.reduce((total, item) => total + item.progress, 0) / assignedWork.length)
+                : 0;
+            const metrics = [
+                ["Total Team Leads", teamLeads.length],
+                ["Active Team Leads", teamLeads.filter((lead) => lead.status === "active").length],
+                ["Total Assigned Work", assignedWork.length],
+                ["In Progress Work", assignedWork.filter((work) => work.status === "in_progress").length],
+                ["Blocked Work", assignedWork.filter((work) => work.status === "blocked").length],
+                ["Completed Work", assignedWork.filter((work) => work.status === "completed").length],
+                ["Average Progress", `${avgProgress}%`],
+                ["High Priority Work", assignedWork.filter((work) => ["high", "urgent"].includes(work.priority)).length],
+            ];
+
+            document.getElementById("summary").innerHTML = metrics.map(([label, value]) => `
+                <div class="metric">
+                    <strong>${value}</strong>
+                    <span>${label}</span>
+                </div>
+            `).join("");
+            renderCharts();
+        }
+
+        function canvasContext(id) {
+            const canvas = document.getElementById(id);
+            const rect = canvas.getBoundingClientRect();
+            const ratio = window.devicePixelRatio || 1;
+            const width = Math.max(rect.width, 1);
+            const height = Math.max(rect.height, 1);
+            canvas.width = width * ratio;
+            canvas.height = height * ratio;
+            const ctx = canvas.getContext("2d");
+            ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+            ctx.clearRect(0, 0, width, height);
+            return {ctx, width, height};
+        }
+
+        function drawEmptyChart(ctx, width, height, message = "No data yet") {
+            ctx.fillStyle = cssColor("--muted");
+            ctx.font = "14px Arial";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.fillText(message, width / 2, height / 2);
+        }
+
+        function renderCharts() {
+            if (!document.getElementById("status-pie-chart")) return;
+            renderStatusPieChart();
+            renderTeamWorkBarChart();
+            renderTeamProgressBarChart();
+        }
+
+        function renderStatusPieChart() {
+            const {ctx, width, height} = canvasContext("status-pie-chart");
+            const data = choices.workStatus
+                .map(([value, label]) => ({
+                    value,
+                    label,
+                    count: assignedWork.filter((work) => work.status === value).length,
+                }))
+                .filter((item) => item.count > 0);
+            const total = data.reduce((sum, item) => sum + item.count, 0);
+            const legend = document.getElementById("status-pie-legend");
+
+            if (!total) {
+                legend.innerHTML = "";
+                drawEmptyChart(ctx, width, height);
+                return;
+            }
+
+            const radius = Math.min(width, height) * 0.34;
+            const cx = width / 2;
+            const cy = height / 2;
+            let start = -Math.PI / 2;
+
+            data.forEach((item, index) => {
+                const angle = (item.count / total) * Math.PI * 2;
+                ctx.beginPath();
+                ctx.moveTo(cx, cy);
+                ctx.arc(cx, cy, radius, start, start + angle);
+                ctx.closePath();
+                ctx.fillStyle = chartColors[index % chartColors.length];
+                ctx.fill();
+                start += angle;
+            });
+
+            ctx.fillStyle = cssColor("--panel");
+            ctx.beginPath();
+            ctx.arc(cx, cy, radius * 0.52, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = cssColor("--text");
+            ctx.font = "700 22px Arial";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.fillText(total, cx, cy - 8);
+            ctx.fillStyle = cssColor("--muted");
+            ctx.font = "12px Arial";
+            ctx.fillText("work items", cx, cy + 14);
+
+            legend.innerHTML = data.map((item, index) => `
+                <span class="legend-item">
+                    <span class="legend-swatch" style="background:${chartColors[index % chartColors.length]}"></span>
+                    ${item.label}: ${item.count}
+                </span>
+            `).join("");
+        }
+
+        function teamName(teamLeadId) {
+            const lead = teamLeads.find((item) => item.id === Number(teamLeadId));
+            return lead ? lead.full_name : "Unassigned";
+        }
+
+        function groupedByTeam() {
+            const groups = new Map();
+            assignedWork.forEach((work) => {
+                if (!groups.has(work.team_lead)) {
+                    groups.set(work.team_lead, {
+                        label: work.team_lead_name || teamName(work.team_lead),
+                        count: 0,
+                        progressTotal: 0,
+                    });
+                }
+                const group = groups.get(work.team_lead);
+                group.count += 1;
+                group.progressTotal += work.progress;
+            });
+
+            return Array.from(groups.values()).map((group) => ({
+                label: group.label,
+                count: group.count,
+                averageProgress: Math.round(group.progressTotal / group.count),
+            }));
+        }
+
+        function renderTeamWorkBarChart() {
+            const data = groupedByTeam().map((group) => ({
+                label: group.label,
+                value: group.count,
+                suffix: "",
+            }));
+            drawHorizontalBarChart("team-work-bar-chart", data, {maxValue: null, barColor: "#2563eb"});
+        }
+
+        function renderTeamProgressBarChart() {
+            const data = groupedByTeam().map((group) => ({
+                label: group.label,
+                value: group.averageProgress,
+                suffix: "%",
+            }));
+            drawHorizontalBarChart("team-progress-bar-chart", data, {maxValue: 100, barColor: "#22c55e", includeZero: true});
+        }
+
+        function drawHorizontalBarChart(id, data, options) {
+            const {ctx, width, height} = canvasContext(id);
+            const visibleData = options.includeZero ? data : data.filter((item) => item.value > 0);
+            if (!visibleData.length) {
+                drawEmptyChart(ctx, width, height);
+                return;
+            }
+
+            const maxValue = options.maxValue || Math.max(...visibleData.map((item) => item.value));
+            const leftPad = Math.min(130, Math.max(92, width * 0.34));
+            const rightPad = 44;
+            const topPad = 18;
+            const bottomPad = 18;
+            const rowHeight = (height - topPad - bottomPad) / visibleData.length;
+            const barHeight = Math.min(24, Math.max(14, rowHeight * 0.46));
+            const barWidth = Math.max(width - leftPad - rightPad, 40);
+
+            ctx.font = "12px Arial";
+            ctx.textBaseline = "middle";
+
+            visibleData.forEach((item, index) => {
+                const y = topPad + rowHeight * index + rowHeight / 2;
+                const valueWidth = maxValue ? (item.value / maxValue) * barWidth : 0;
+
+                ctx.fillStyle = cssColor("--muted");
+                ctx.textAlign = "right";
+                ctx.fillText(item.label.slice(0, 18), leftPad - 12, y);
+
+                ctx.fillStyle = cssColor("--control");
+                ctx.fillRect(leftPad, y - barHeight / 2, barWidth, barHeight);
+
+                ctx.fillStyle = options.barColor;
+                ctx.fillRect(leftPad, y - barHeight / 2, valueWidth, barHeight);
+
+                ctx.fillStyle = cssColor("--text");
+                ctx.textAlign = "left";
+                ctx.fillText(`${item.value}${item.suffix || ""}`, leftPad + valueWidth + 8, y);
+            });
+        }
+
+        function renderTeamDropdown() {
+            const select = workInput("team_lead");
+            select.innerHTML = "";
+
+            if (!teamLeads.length) {
+                select.innerHTML = '<option value="">Add a team lead first</option>';
+                return;
+            }
+
+            teamLeads.forEach((lead) => {
+                const option = document.createElement("option");
+                option.value = lead.id;
+                option.textContent = lead.full_name;
+                select.appendChild(option);
+            });
+        }
+
+        function renderTeamTable(data) {
+            const tbody = document.getElementById("team-table");
+            if (!data.length) {
+                tbody.innerHTML = '<tr><td colspan="8" class="muted">No team leads found.</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = data.map((lead) => `
+                <tr>
+                    <td><strong>${escapeHtml(lead.full_name)}</strong></td>
+                    <td>${escapeHtml(lead.email)}<br>${escapeHtml(lead.phone)}</td>
+                    <td>${escapeHtml(lead.department)}</td>
+                    <td>${escapeHtml(lead.designation)}</td>
+                    <td>${escapeHtml(lead.specialization)}</td>
+                    <td><span class="badge ${lead.status}">${labelFor(choices.teamStatus, lead.status)}</span></td>
+                    <td>${lead.assigned_work_count}</td>
+                    <td>
+                        <div class="row-actions">
+                            ${iconButton({label: "Edit", iconName: "edit", action: `editTeamLead(${lead.id})`})}
+                            ${iconButton({label: "View Work", iconName: "eye", action: `filterWorkByTeam(${lead.id})`})}
+                            ${iconButton({variant: "danger", label: "Delete", iconName: "trash", action: `deleteTeamLead(${lead.id})`})}
+                        </div>
+                    </td>
+                </tr>
+            `).join("");
+        }
+
+        function renderWorkTable(data) {
+            const tbody = document.getElementById("work-table");
+            if (!data.length) {
+                tbody.innerHTML = '<tr><td colspan="10" class="muted">No assigned work found.</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = data.map((work) => `
+                <tr>
+                    <td><strong>${escapeHtml(work.title)}</strong><br><span class="muted">${escapeHtml(work.responsibility)}</span></td>
+                    <td>${escapeHtml(work.team_lead_name)}</td>
+                    <td>${escapeHtml(work.client_name)}</td>
+                    <td>${escapeHtml(work.campaign_name)}<br><span class="muted">${labelFor(choices.campaignType, work.campaign_type)}</span></td>
+                    <td>${labelFor(choices.channel, work.channel)}</td>
+                    <td>${labelFor(choices.priority, work.priority)}</td>
+                    <td><span class="badge ${work.status}">${labelFor(choices.workStatus, work.status)}</span></td>
+                    <td><progress max="100" value="${work.progress}"></progress> ${work.progress}%</td>
+                    <td>${escapeHtml(work.due_date || "")}</td>
+                    <td>
+                        <div class="row-actions">
+                            ${iconButton({label: "Edit", iconName: "edit", action: `editWork(${work.id})`})}
+                            ${iconButton({label: "Mark In Progress", iconName: "play", action: `updateWorkStatus(${work.id}, 'in_progress')`})}
+                            ${iconButton({variant: "warning", label: "Mark Blocked", iconName: "alert", action: `updateWorkStatus(${work.id}, 'blocked')`})}
+                            ${iconButton({variant: "success", label: "Mark Completed", iconName: "check", action: `updateWorkStatus(${work.id}, 'completed', 100)`})}
+                            ${iconButton({variant: "danger", label: "Delete", iconName: "trash", action: `deleteWork(${work.id})`})}
+                        </div>
+                    </td>
+                </tr>
+            `).join("");
+        }
+
+        async function saveTeamLead(event) {
+            event.preventDefault();
+            const id = document.getElementById("team-id").value;
+            const url = id ? `${TEAM_API}${id}/` : TEAM_API;
+            const method = id ? "PUT" : "POST";
+
+            try {
+                await fetchJson(url, {
+                    method,
+                    headers: {"Content-Type": "application/json"},
+                    body: JSON.stringify(teamPayload()),
+                });
+                setMessage(id ? "Team lead updated." : "Team lead added.");
+                resetTeamForm();
+                await reloadAll();
+            } catch (error) {
+                setMessage(error.message, true);
+            }
+        }
+
+        function editTeamLead(id) {
+            const lead = teamLeads.find((item) => item.id === id);
+            if (!lead) return;
+
+            document.getElementById("team-id").value = lead.id;
+            teamFields.forEach((field) => {
+                teamInput(field).value = lead[field] || "";
+            });
+            document.getElementById("team-form-title").textContent = "Edit Team Lead";
+            window.scrollTo({top: 0, behavior: "smooth"});
+        }
+
+        async function deleteTeamLead(id) {
+            if (!confirm("Delete this team lead and assigned work?")) return;
+
+            try {
+                await fetchJson(`${TEAM_API}${id}/`, {method: "DELETE"});
+                setMessage("Team lead deleted.");
+                await reloadAll();
+            } catch (error) {
+                setMessage(error.message, true);
+            }
+        }
+
+        async function saveWork(event) {
+            event.preventDefault();
+            if (!teamLeads.length) {
+                setMessage("Add a team lead before assigning work.", true);
+                return;
+            }
+
+            const id = document.getElementById("work-id").value;
+            const url = id ? `${WORK_API}${id}/` : WORK_API;
+            const method = id ? "PUT" : "POST";
+
+            try {
+                await fetchJson(url, {
+                    method,
+                    headers: {"Content-Type": "application/json"},
+                    body: JSON.stringify(workPayload()),
+                });
+                setMessage(id ? "Assigned work updated." : "Assigned work added.");
+                resetWorkForm();
+                await reloadAll();
+            } catch (error) {
+                setMessage(error.message, true);
+            }
+        }
+
+        function editWork(id) {
+            const work = assignedWork.find((item) => item.id === id);
+            if (!work) return;
+
+            document.getElementById("work-id").value = work.id;
+            workFields.forEach((field) => {
+                workInput(field).value = work[field] || "";
+            });
+            document.getElementById("work-form-title").textContent = "Edit Assigned Work";
+            window.scrollTo({top: document.getElementById("work-form").offsetTop - 20, behavior: "smooth"});
+        }
+
+        async function updateWorkStatus(id, status, progress = null) {
+            const payload = {status};
+            if (progress !== null) payload.progress = progress;
+
+            try {
+                await fetchJson(`${WORK_API}${id}/`, {
+                    method: "PATCH",
+                    headers: {"Content-Type": "application/json"},
+                    body: JSON.stringify(payload),
+                });
+                setMessage("Assigned work status updated.");
+                await reloadAll();
+            } catch (error) {
+                setMessage(error.message, true);
+            }
+        }
+
+        async function deleteWork(id) {
+            if (!confirm("Delete this assigned work?")) return;
+
+            try {
+                await fetchJson(`${WORK_API}${id}/`, {method: "DELETE"});
+                setMessage("Assigned work deleted.");
+                await reloadAll();
+            } catch (error) {
+                setMessage(error.message, true);
+            }
+        }
+
+        async function filterWorkByTeam(id) {
+            const lead = teamLeads.find((item) => item.id === id);
+            activeTeamLeadFilter = String(id);
+            activeTeamLeadFilterName = lead ? lead.full_name : "selected team lead";
+            document.getElementById("work-search").value = "";
+            document.getElementById("work-filter-status").value = "";
+            document.getElementById("work-filter-priority").value = "";
+            await loadAssignedWork();
+            renderSummary();
+            setMessage(`Showing assigned work for ${activeTeamLeadFilterName}.`);
+            document.getElementById("assigned-work-panel").scrollIntoView({behavior: "smooth", block: "start"});
+        }
+
+        function init() {
+            fillOptions("team-status", choices.teamStatus);
+            fillOptions("team-filter-status", choices.teamStatus, true);
+            fillOptions("work-campaign_type", choices.campaignType);
+            fillOptions("work-channel", choices.channel);
+            fillOptions("work-priority", choices.priority);
+            fillOptions("work-status", choices.workStatus);
+            fillOptions("work-filter-status", choices.workStatus, true);
+            fillOptions("work-filter-priority", choices.priority, true);
+
+            document.getElementById("team-form").addEventListener("submit", saveTeamLead);
+            document.getElementById("work-form").addEventListener("submit", saveWork);
+            document.getElementById("theme-toggle").addEventListener("click", () => {
+                applyTheme(document.body.dataset.theme === "dark" ? "light" : "dark");
+            });
+            window.addEventListener("resize", renderCharts);
+            document.getElementById("cancel-team-edit").addEventListener("click", resetTeamForm);
+            document.getElementById("cancel-work-edit").addEventListener("click", resetWorkForm);
+            document.getElementById("apply-team-filters").addEventListener("click", async () => {
+                await loadTeamLeads();
+                renderSummary();
+            });
+            document.getElementById("clear-team-filters").addEventListener("click", async () => {
+                document.getElementById("team-search").value = "";
+                document.getElementById("team-filter-status").value = "";
+                await loadTeamLeads();
+                renderSummary();
+            });
+            document.getElementById("apply-work-filters").addEventListener("click", async () => {
+                await loadAssignedWork();
+                renderSummary();
+            });
+            document.getElementById("clear-work-filters").addEventListener("click", async () => {
+                activeTeamLeadFilter = "";
+                activeTeamLeadFilterName = "";
+                document.getElementById("work-search").value = "";
+                document.getElementById("work-filter-status").value = "";
+                document.getElementById("work-filter-priority").value = "";
+                await loadAssignedWork();
+                renderSummary();
+            });
+
+            initTheme();
+            resetTeamForm();
+            resetWorkForm();
+            reloadAll().then(resetWorkForm);
+        }
+
+        init();
+    </script>
+</body>
+</html>
