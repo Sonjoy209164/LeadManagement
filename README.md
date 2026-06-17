@@ -11,6 +11,7 @@ Internal Django dashboard for managers to track marketing team leads, assigned c
 - Lead scoring based on engagement, behavior, industry fit, and revenue
 - Automatic lead assignment to the best available team lead
 - Lead generation intake overview for form, social, and chat sources
+- Lead nurturing overview for phone, email, live chat, and social follow-ups
 - Search and filters
 - Summary cards
 - Dark mode
@@ -170,6 +171,25 @@ Email Campaign source -> Email specialist
 No match -> active team lead with the fewest scored leads
 ```
 
+## Lead Nurturing
+
+The overview dashboard groups active scored leads by follow-up channel:
+
+```text
+Telephony -> active leads with phone numbers
+Email -> active leads with email addresses, sorted by email engagement
+Live Chat -> active chat-source leads
+Social Media -> active social-source leads, sorted by social engagement
+```
+
+Active lead statuses:
+
+```text
+new
+contacted
+qualified
+```
+
 ## API Endpoints
 
 ```text
@@ -211,10 +231,11 @@ Hot Unassigned Leads
 Average Score
 ```
 
-Charts include:
+Overview panels and charts include:
 
 ```text
 Lead Generation Intake
+Lead Nurturing
 Work Status Distribution
 Workload By Team Lead
 Average Progress By Team Lead

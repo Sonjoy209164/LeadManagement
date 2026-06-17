@@ -268,6 +268,110 @@
             justify-content: space-between;
         }
 
+        .lead-nurturing {
+            background: var(--panel);
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            padding: 22px;
+        }
+
+        .nurture-header {
+            margin: 0 auto 18px;
+            max-width: 760px;
+            text-align: center;
+        }
+
+        .nurture-header h2 {
+            font-size: 26px;
+            margin-bottom: 8px;
+        }
+
+        .nurture-grid {
+            align-items: start;
+            display: grid;
+            gap: 14px;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        }
+
+        .nurture-card {
+            background: var(--metric);
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            min-height: 240px;
+            overflow: hidden;
+            padding: 14px;
+        }
+
+        .nurture-label {
+            background: var(--control);
+            border: 1px solid var(--line);
+            border-radius: 5px;
+            color: var(--control-text);
+            display: inline-flex;
+            font-size: 11px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            padding: 4px 7px;
+            text-transform: uppercase;
+        }
+
+        .nurture-channel-head {
+            align-items: flex-start;
+            display: flex;
+            gap: 12px;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .nurture-channel-head strong {
+            font-size: 24px;
+        }
+
+        .nurture-list {
+            display: grid;
+            gap: 9px;
+            max-height: 158px;
+            overflow: auto;
+            padding-right: 4px;
+        }
+
+        .nurture-item {
+            border-top: 1px solid var(--line);
+            display: grid;
+            gap: 5px;
+            padding-top: 9px;
+        }
+
+        .nurture-item:first-child {
+            border-top: 0;
+            padding-top: 0;
+        }
+
+        .nurture-item-title {
+            align-items: flex-start;
+            display: flex;
+            gap: 8px;
+            justify-content: space-between;
+        }
+
+        .nurture-score {
+            color: var(--muted);
+            flex: 0 0 auto;
+            font-size: 12px;
+        }
+
+        .nurture-meta {
+            align-items: center;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .nurture-detail {
+            color: var(--muted);
+            font-size: 12px;
+        }
+
         .chart-card {
             background: var(--panel);
             border: 1px solid var(--line);
@@ -536,90 +640,90 @@
             text-transform: capitalize;
         }
 
-        .active,
-        .completed {
+        .badge.active,
+        .badge.completed {
             background: #dcfce7;
             color: #15803d;
         }
 
-        body[data-theme="dark"] .active,
-        body[data-theme="dark"] .completed {
+        body[data-theme="dark"] .badge.active,
+        body[data-theme="dark"] .badge.completed {
             background: #14532d;
             color: #bbf7d0;
         }
 
-        .inactive,
-        .cancelled {
+        .badge.inactive,
+        .badge.cancelled {
             background: #e2e8f0;
             color: #475569;
         }
 
-        body[data-theme="dark"] .inactive,
-        body[data-theme="dark"] .cancelled {
+        body[data-theme="dark"] .badge.inactive,
+        body[data-theme="dark"] .badge.cancelled {
             background: #334155;
             color: #cbd5e1;
         }
 
-        .on_leave,
-        .blocked,
-        .warm {
+        .badge.on_leave,
+        .badge.blocked,
+        .badge.warm {
             background: #fef3c7;
             color: #b45309;
         }
 
-        body[data-theme="dark"] .on_leave,
-        body[data-theme="dark"] .blocked,
-        body[data-theme="dark"] .warm {
+        body[data-theme="dark"] .badge.on_leave,
+        body[data-theme="dark"] .badge.blocked,
+        body[data-theme="dark"] .badge.warm {
             background: #78350f;
             color: #fde68a;
         }
 
-        .not_started,
-        .in_progress,
-        .new,
-        .contacted,
-        .cold {
+        .badge.not_started,
+        .badge.in_progress,
+        .badge.new,
+        .badge.contacted,
+        .badge.cold {
             background: #dbeafe;
             color: #1d4ed8;
         }
 
-        body[data-theme="dark"] .not_started,
-        body[data-theme="dark"] .in_progress,
-        body[data-theme="dark"] .new,
-        body[data-theme="dark"] .contacted,
-        body[data-theme="dark"] .cold {
+        body[data-theme="dark"] .badge.not_started,
+        body[data-theme="dark"] .badge.in_progress,
+        body[data-theme="dark"] .badge.new,
+        body[data-theme="dark"] .badge.contacted,
+        body[data-theme="dark"] .badge.cold {
             background: #1e3a8a;
             color: #bfdbfe;
         }
 
-        .qualified,
-        .converted {
+        .badge.qualified,
+        .badge.converted {
             background: #dcfce7;
             color: #15803d;
         }
 
-        body[data-theme="dark"] .qualified,
-        body[data-theme="dark"] .converted {
+        body[data-theme="dark"] .badge.qualified,
+        body[data-theme="dark"] .badge.converted {
             background: #14532d;
             color: #bbf7d0;
         }
 
-        .lost {
+        .badge.lost {
             background: #fee2e2;
             color: #b91c1c;
         }
 
-        body[data-theme="dark"] .lost {
+        body[data-theme="dark"] .badge.lost {
             background: #7f1d1d;
             color: #fecaca;
         }
 
-        .hot {
+        .badge.hot {
             background: #fee2e2;
             color: #b91c1c;
         }
 
-        body[data-theme="dark"] .hot {
+        body[data-theme="dark"] .badge.hot {
             background: #7f1d1d;
             color: #fecaca;
         }
@@ -736,6 +840,50 @@
                             </div>
                             <div id="chat-lead-feed"></div>
                         </div>
+                    </article>
+                </div>
+            </section>
+
+            <section class="lead-nurturing" aria-label="Lead nurturing">
+                <div class="nurture-header">
+                    <h2>Lead Nurturing</h2>
+                    <p class="muted">Follow up with active leads through phone, email, live chat, and social channels until they convert or close.</p>
+                </div>
+                <div class="nurture-grid">
+                    <article class="nurture-card">
+                        <span class="nurture-label">Telephony</span>
+                        <div class="nurture-channel-head">
+                            <span class="muted">Callable active leads</span>
+                            <strong id="phone-nurture-count">0</strong>
+                        </div>
+                        <div class="nurture-list" id="phone-nurture-feed"></div>
+                    </article>
+
+                    <article class="nurture-card">
+                        <span class="nurture-label">Email</span>
+                        <div class="nurture-channel-head">
+                            <span class="muted">Email follow-ups</span>
+                            <strong id="email-nurture-count">0</strong>
+                        </div>
+                        <div class="nurture-list" id="email-nurture-feed"></div>
+                    </article>
+
+                    <article class="nurture-card">
+                        <span class="nurture-label">Live Chat</span>
+                        <div class="nurture-channel-head">
+                            <span class="muted">Chat follow-ups</span>
+                            <strong id="chat-nurture-count">0</strong>
+                        </div>
+                        <div class="nurture-list" id="chat-nurture-feed"></div>
+                    </article>
+
+                    <article class="nurture-card">
+                        <span class="nurture-label">Social Media</span>
+                        <div class="nurture-channel-head">
+                            <span class="muted">Social follow-ups</span>
+                            <strong id="social-nurture-count">0</strong>
+                        </div>
+                        <div class="nurture-list" id="social-nurture-feed"></div>
                     </article>
                 </div>
             </section>
@@ -1431,6 +1579,7 @@
             renderLeadScoreSummary(data);
             renderLeadTable(data);
             renderLeadGenerationIntake();
+            renderLeadNurturing();
         }
 
         function renderWorkFilterNote() {
@@ -1524,6 +1673,79 @@
                     <div class="${isChat ? "chat-meta" : ""}">
                         <span class="badge ${lead.lead_grade}">${labelFor(choices.leadGrade, lead.lead_grade)}</span>
                         <span class="muted">Score ${lead.lead_score}</span>
+                    </div>
+                </div>
+            `).join("");
+        }
+
+        function renderLeadNurturing() {
+            const activeStatuses = ["new", "contacted", "qualified"];
+            const activeLeads = scoredLeads.filter((lead) => activeStatuses.includes(lead.status));
+            const phoneLeads = activeLeads
+                .filter((lead) => lead.phone)
+                .sort((a, b) => b.lead_score - a.lead_score);
+            const emailLeads = activeLeads
+                .filter((lead) => lead.email)
+                .sort((a, b) => b.email_engagement - a.email_engagement || b.lead_score - a.lead_score);
+            const chatLeads = activeLeads
+                .filter((lead) => lead.source === "chat")
+                .sort((a, b) => b.lead_score - a.lead_score);
+            const socialLeads = activeLeads
+                .filter((lead) => lead.source === "social_media")
+                .sort((a, b) => b.social_engagement - a.social_engagement || b.lead_score - a.lead_score);
+
+            setText("phone-nurture-count", phoneLeads.length);
+            setText("email-nurture-count", emailLeads.length);
+            setText("chat-nurture-count", chatLeads.length);
+            setText("social-nurture-count", socialLeads.length);
+
+            document.getElementById("phone-nurture-feed").innerHTML = nurtureFeed(
+                phoneLeads,
+                "No callable leads ready.",
+                (lead) => `Phone ${escapeHtml(lead.phone)}`
+            );
+            document.getElementById("email-nurture-feed").innerHTML = nurtureFeed(
+                emailLeads,
+                "No email leads ready.",
+                (lead) => `Email engagement ${lead.email_engagement}%`
+            );
+            document.getElementById("chat-nurture-feed").innerHTML = nurtureFeed(
+                chatLeads,
+                "No chat leads ready.",
+                (lead) => `${lead.website_visits} website visits`
+            );
+            document.getElementById("social-nurture-feed").innerHTML = nurtureFeed(
+                socialLeads,
+                "No social leads ready.",
+                (lead) => `Social engagement ${lead.social_engagement}%`
+            );
+        }
+
+        function setText(id, value) {
+            const element = document.getElementById(id);
+            if (element) element.textContent = value;
+        }
+
+        function nurtureFeed(leads, emptyText, detailText) {
+            if (!leads.length) {
+                return `<p class="muted">${emptyText}</p>`;
+            }
+
+            return leads.slice(0, 3).map((lead) => `
+                <div class="nurture-item">
+                    <div class="nurture-item-title">
+                        <div>
+                            <strong>${escapeHtml(lead.full_name)}</strong>
+                            <div class="muted">${escapeHtml(lead.company_name || lead.industry || "Unknown company")}</div>
+                        </div>
+                        <span class="nurture-score">Score ${lead.lead_score}</span>
+                    </div>
+                    <div class="nurture-meta">
+                        <span class="badge ${lead.lead_grade}">${labelFor(choices.leadGrade, lead.lead_grade)}</span>
+                        <span class="badge ${lead.status}">${labelFor(choices.leadStatus, lead.status)}</span>
+                    </div>
+                    <div class="nurture-detail">
+                        ${detailText(lead)} | Owner: ${escapeHtml(lead.assigned_to_name || "Unassigned")}
                     </div>
                 </div>
             `).join("");

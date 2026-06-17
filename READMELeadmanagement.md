@@ -11,6 +11,7 @@ The system is intentionally focused:
 - Track work status and progress
 - Score incoming leads
 - Auto-distribute leads to suitable team leads
+- Nurture active leads through phone, email, live chat, and social channels
 - Show operational metrics and charts
 
 ## Manager Login
@@ -247,6 +248,25 @@ No match -> active team lead with the lowest scored-lead count
 
 This helps prevent unattended leads.
 
+## Lead Nurturing
+
+The dashboard shows active leads grouped by the best follow-up channel.
+
+```text
+Telephony -> leads with phone numbers
+Email -> leads with email addresses, sorted by email engagement
+Live Chat -> chat-source leads
+Social Media -> social-source leads, sorted by social engagement
+```
+
+Only active pipeline statuses are shown in this section:
+
+```text
+new
+contacted
+qualified
+```
+
 ## Relationship Diagram
 
 ```mermaid
@@ -292,6 +312,7 @@ flowchart TD
     B --> C[Manage Team Leads]
     B --> D[Manage Assigned Work]
     B --> E[Manage Scored Leads]
+    B --> L[Review Lead Nurturing]
     E --> F[Enter scoring inputs]
     F --> G[Backend calculates score and grade]
     G --> H{Assigned owner selected?}
@@ -299,6 +320,7 @@ flowchart TD
     H -->|No| J[Auto-assign by routing rules]
     I --> K[Refresh dashboard]
     J --> K
+    L --> M[Group active leads by phone, email, chat, and social]
 ```
 
 ## API Endpoints
@@ -341,6 +363,7 @@ DELETE /api/leads/{id}/
 ```text
 Summary cards
 Lead generation intake
+Lead nurturing
 Charts
 Lead scoring form
 Lead scoring table
@@ -370,10 +393,11 @@ Hot Unassigned Leads
 Average Score
 ```
 
-## Charts
+## Overview Panels And Charts
 
 ```text
 Lead Generation Intake
+Lead Nurturing
 Work Status Distribution
 Workload By Team Lead
 Average Progress By Team Lead
