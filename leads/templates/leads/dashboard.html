@@ -591,6 +591,57 @@
             overflow: hidden;
         }
 
+        .agent-cell {
+            align-items: center;
+            display: flex;
+            gap: 10px;
+            min-width: 0;
+        }
+
+        .agent-avatar {
+            align-items: center;
+            border: 1px solid rgba(255, 255, 255, 0.32);
+            border-radius: 999px;
+            color: #fff;
+            display: inline-flex;
+            flex: 0 0 auto;
+            font-size: 12px;
+            font-weight: 700;
+            height: 34px;
+            justify-content: center;
+            text-transform: uppercase;
+            width: 34px;
+        }
+
+        .agent-avatar.small {
+            font-size: 10px;
+            height: 26px;
+            width: 26px;
+        }
+
+        .agent-copy {
+            display: grid;
+            gap: 2px;
+            min-width: 0;
+        }
+
+        .agent-meta {
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .agent-unassigned .agent-avatar,
+        .agent-avatar.unassigned-avatar {
+            background: var(--control);
+            color: var(--muted);
+        }
+
+        .nurture-agent {
+            align-items: center;
+            display: flex;
+            gap: 7px;
+        }
+
         .row-actions {
             display: flex;
             flex-wrap: nowrap;
@@ -1390,6 +1441,43 @@
                 .replaceAll("'", "&#039;");
         }
 
+        const avatarColors = ["#2563eb", "#7c3aed", "#0891b2", "#c2410c", "#be123c", "#0f766e", "#4f46e5"];
+
+        function agentInitials(name) {
+            const label = String(name || "").trim();
+            if (!label || label === "Unassigned") return "?";
+            const words = label.split(/\s+/).filter(Boolean);
+            if (words.length === 1) return words[0].slice(0, 2).toUpperCase();
+            return `${words[0][0]}${words[words.length - 1][0]}`.toUpperCase();
+        }
+
+        function avatarColor(name) {
+            const label = String(name || "");
+            const hash = [...label].reduce((total, char) => total + char.charCodeAt(0), 0);
+            return avatarColors[hash % avatarColors.length];
+        }
+
+        function agentAvatar(name, size = "") {
+            const label = String(name || "Unassigned").trim() || "Unassigned";
+            const isUnassigned = label === "Unassigned";
+            const style = isUnassigned ? "" : ` style="background:${avatarColor(label)}"`;
+            return `<span class="agent-avatar ${size} ${isUnassigned ? "unassigned-avatar" : ""}"${style} aria-hidden="true">${agentInitials(label)}</span>`;
+        }
+
+        function agentIdentity(name, meta = "", size = "") {
+            const label = String(name || "Unassigned").trim() || "Unassigned";
+            const isUnassigned = label === "Unassigned";
+            return `
+                <div class="agent-cell ${isUnassigned ? "agent-unassigned" : ""}">
+                    ${agentAvatar(label, size)}
+                    <div class="agent-copy">
+                        <strong>${escapeHtml(label)}</strong>
+                        ${meta ? `<span class="agent-meta">${escapeHtml(meta)}</span>` : ""}
+                    </div>
+                </div>
+            `;
+        }
+
         function icon(name) {
             const icons = {
                 edit: '<svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg>',
@@ -1744,8 +1832,10 @@
                         <span class="badge ${lead.lead_grade}">${labelFor(choices.leadGrade, lead.lead_grade)}</span>
                         <span class="badge ${lead.status}">${labelFor(choices.leadStatus, lead.status)}</span>
                     </div>
-                    <div class="nurture-detail">
-                        ${detailText(lead)} | Owner: ${escapeHtml(lead.assigned_to_name || "Unassigned")}
+                    <div class="nurture-detail">${detailText(lead)}</div>
+                    <div class="nurture-agent">
+                        ${agentAvatar(lead.assigned_to_name || "Unassigned", "small")}
+                        <span class="nurture-detail">Owner: ${escapeHtml(lead.assigned_to_name || "Unassigned")}</span>
                     </div>
                 </div>
             `).join("");
@@ -2022,7 +2112,7 @@
 
             tbody.innerHTML = data.map((lead) => `
                 <tr>
-                    <td><strong>${escapeHtml(lead.full_name)}</strong></td>
+                    <td>${agentIdentity(lead.full_name, lead.specialization || lead.department)}</td>
                     <td>${escapeHtml(lead.email)}<br>${escapeHtml(lead.phone)}</td>
                     <td>${escapeHtml(lead.department)}</td>
                     <td>${escapeHtml(lead.designation)}</td>
@@ -2050,7 +2140,7 @@
             tbody.innerHTML = data.map((work) => `
                 <tr>
                     <td><strong>${escapeHtml(work.title)}</strong><br><span class="muted clamp">${escapeHtml(work.responsibility)}</span></td>
-                    <td>${escapeHtml(work.team_lead_name)}</td>
+                    <td>${agentIdentity(work.team_lead_name || "Unassigned", "Owner", "small")}</td>
                     <td>${escapeHtml(work.client_name)}</td>
                     <td>${escapeHtml(work.campaign_name)}<br><span class="muted">${labelFor(choices.campaignType, work.campaign_type)}</span></td>
                     <td>${labelFor(choices.channel, work.channel)}</td>
@@ -2083,7 +2173,7 @@
                     <td><strong>${escapeHtml(lead.full_name)}</strong><br><span class="muted clamp">${escapeHtml(lead.email || lead.phone)}</span></td>
                     <td>${escapeHtml(lead.company_name)}<br><span class="muted clamp">${escapeHtml(lead.industry)}</span></td>
                     <td>${labelFor(choices.leadSource, lead.source)}</td>
-                    <td>${escapeHtml(lead.assigned_to_name || "Unassigned")}</td>
+                    <td>${agentIdentity(lead.assigned_to_name || "Unassigned", "Owner", "small")}</td>
                     <td><span class="badge ${lead.status}">${labelFor(choices.leadStatus, lead.status)}</span></td>
                     <td>Email ${lead.email_engagement}%<br><span class="muted">Social ${lead.social_engagement}%</span></td>
                     <td>${lead.website_visits} visits<br><span class="muted">${lead.form_submissions} forms</span></td>
