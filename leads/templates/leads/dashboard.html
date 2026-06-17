@@ -540,6 +540,12 @@
                 <canvas id="lead-grade-pie-chart"></canvas>
                 <div class="chart-legend" id="lead-grade-pie-legend"></div>
             </article>
+
+            <article class="chart-card">
+                <h2>Leads Per Team Lead</h2>
+                <p class="muted">Scored leads currently assigned to each owner.</p>
+                <canvas id="lead-owner-bar-chart"></canvas>
+            </article>
         </section>
 
         <section class="panel">
@@ -586,6 +592,7 @@
                 <label>
                     Assigned To
                     <select id="lead-assigned_to"></select>
+                    <span class="muted">Leave blank to auto-assign.</span>
                 </label>
 
                 <label>
@@ -1081,7 +1088,7 @@
             leadInput("social_engagement").value = 0;
             leadInput("website_visits").value = 0;
             leadInput("form_submissions").value = 0;
-            if (teamLeads[0]) leadInput("assigned_to").value = teamLeads[0].id;
+            leadInput("assigned_to").value = "";
         }
 
         async function fetchJson(url, options = {}) {
@@ -1212,6 +1219,7 @@
             renderTeamWorkBarChart();
             renderTeamProgressBarChart();
             renderLeadGradePieChart();
+            renderLeadOwnerBarChart();
         }
 
         function renderStatusPieChart() {
@@ -1328,6 +1336,21 @@
                     ${item.label}: ${item.count}
                 </span>
             `).join("");
+        }
+
+        function renderLeadOwnerBarChart() {
+            const groups = new Map();
+            scoredLeads.forEach((lead) => {
+                const label = lead.assigned_to_name || "Unassigned";
+                groups.set(label, (groups.get(label) || 0) + 1);
+            });
+            const data = Array.from(groups.entries()).map(([label, value]) => ({
+                label,
+                value,
+                suffix: "",
+            }));
+
+            drawHorizontalBarChart("lead-owner-bar-chart", data, {maxValue: null, barColor: "#8b5cf6"});
         }
 
         function teamName(teamLeadId) {
@@ -1448,6 +1471,8 @@
                 ["Hot Leads", data.filter((lead) => lead.lead_grade === "hot").length],
                 ["Warm Leads", data.filter((lead) => lead.lead_grade === "warm").length],
                 ["Cold Leads", data.filter((lead) => lead.lead_grade === "cold").length],
+                ["Unassigned Leads", data.filter((lead) => !lead.assigned_to).length],
+                ["Hot Unassigned Leads", data.filter((lead) => lead.lead_grade === "hot" && !lead.assigned_to).length],
                 ["Average Score", avgScore],
             ];
 

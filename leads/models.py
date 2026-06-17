@@ -1,5 +1,6 @@
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
+from django.db.models import Count
 
 
 class TeamLead(models.Model):
@@ -175,6 +176,8 @@ class Lead(models.Model):
     def save(self, *args, **kwargs):
         self.lead_score = self.calculate_score()
         self.lead_grade = self.calculate_grade(self.lead_score)
+        if not self.assigned_to_id:
+            self.assigned_to = self.auto_assign_team_lead()
         super().save(*args, **kwargs)
 
     def calculate_score(self):
@@ -201,6 +204,45 @@ class Lead(models.Model):
     def industry_score(self):
         high_fit = {"saas", "ecommerce", "real estate", "education", "finance", "retail"}
         return 10 if self.industry.strip().lower() in high_fit else 4 if self.industry else 0
+
+    def auto_assign_team_lead(self):
+        active_team_leads = TeamLead.objects.filter(status=TeamLead.Status.ACTIVE)
+        if not active_team_leads.exists():
+            return None
+
+        specialization = self.target_specialization()
+        if self.lead_grade == self.Grade.HOT and specialization:
+            match = self.lowest_load_match(active_team_leads, specialization)
+            if match:
+                return match
+
+        if specialization:
+            match = self.lowest_load_match(active_team_leads, specialization)
+            if match:
+                return match
+
+        return (
+            active_team_leads.annotate(lead_count=Count("scored_leads"))
+            .order_by("lead_count", "full_name")
+            .first()
+        )
+
+    def target_specialization(self):
+        source_map = {
+            self.Source.PAID_ADS: "Paid Ads",
+            self.Source.SOCIAL_MEDIA: "Social Media",
+            self.Source.WEBSITE: "SEO",
+            self.Source.EMAIL_CAMPAIGN: "Email",
+        }
+        return source_map.get(self.source, "")
+
+    def lowest_load_match(self, queryset, specialization):
+        return (
+            queryset.filter(specialization__icontains=specialization)
+            .annotate(lead_count=Count("scored_leads"))
+            .order_by("lead_count", "full_name")
+            .first()
+        )
 
     @staticmethod
     def calculate_grade(score):
